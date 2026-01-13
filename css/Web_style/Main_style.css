@@ -1,3 +1,38 @@
 * {
     background: #000;
 }
+
+body {
+    background-color: #cce5b4; /* couleur du fond */
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.button {
+    background-color: #a9a9a9; /* couleur pierre */
+    border: 2px solid #777;
+    border-radius: 10px; /* coins arrondis */
+    padding: 20px 50px;
+    margin: 10px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: inset -3px -3px 5px rgba(255,255,255,0.4), /* lumière interne */
+                inset 3px 3px 5px rgba(0,0,0,0.3),          /* ombre interne */
+                3px 3px 5px rgba(0,0,0,0.3);                /* ombre externe */
+    transition: all 0.2s;
+}
+
+.button:hover {
+    box-shadow: inset -2px -2px 4px rgba(255,255,255,0.4),
+                inset 2px 2px 4px rgba(0,0,0,0.3),
+                5px 5px 8px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+}
