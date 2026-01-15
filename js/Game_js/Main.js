@@ -1,5 +1,7 @@
 import Phaser from "phaser";
-import MainScene from "./Map/Map.js";
+//importing classes 
+
+import MainScene from "./Manager/MainSceneManager.js";
 
 const config = {
     type: Phaser.AUTO,
