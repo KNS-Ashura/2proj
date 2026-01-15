@@ -1,8 +1,11 @@
-export class MapManager {
+export default class MapManager {
     constructor(scene) {
         this.scene = scene;
         this.mapGroup = this.scene.add.group();
         this.obstacles = [];
+        this.MAP_SIZE = 40;
+        this.TILE_WIDTH = 512;
+        this.TILE_HEIGHT = 185;
     }
 
 
@@ -15,7 +18,7 @@ export class MapManager {
                 const isoY = (x + y) * (this.TILE_HEIGHT / 2);
 
                 const tile = this.scene.add.image(isoX, isoY, texture);
-                tile.scaleY = 0.5;
+                tile.scaleY = 0.6;
                 tile.setDepth(isoY);
                 this.mapGroup.add(tile);
 

@@ -1,4 +1,4 @@
-export class CameraManager {
+export default class CameraManager {
     constructor(scene) {
         this.scene = scene;
         this.camera = this.scene.cameras.main;

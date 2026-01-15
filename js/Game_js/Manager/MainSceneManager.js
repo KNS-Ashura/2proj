@@ -3,7 +3,7 @@ import MapManager from "./MapManager.js";
 import CameraManager from "./CameraManager.js";
 //import UnitManager from "./UnitsManager.js";
 
-export class MainSceneManager extends Phaser.Scene {
+export default class MainSceneManager extends Phaser.Scene {
     constructor() {
         super({ key: "MainScene" });
     }
