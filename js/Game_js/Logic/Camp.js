@@ -1,3 +1,7 @@
-export class Camp extends Phaser.scene{
-    
+export default class Camp{
+    constructor(hp, damage, hitSpeed){
+        this.hp = hp;
+        this.damage = damage;
+        this.hitSpeed = hitSpeed;
+    }
 }

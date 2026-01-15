@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import MapManager from "./MapManager.js";
 import CameraManager from "./CameraManager.js";
-//import UnitManager from "./UnitsManager.js";
+/* import UnitsManager from "./UnitsManager.js"; */
 
 export default class MainSceneManager extends Phaser.Scene {
     constructor() {
@@ -10,24 +10,24 @@ export default class MainSceneManager extends Phaser.Scene {
 
     preload() {
         // Map
-        this.load.image("grass", "assets/grass.png");
-        this.load.image("water", "assets/water.png");
-        this.load.image('dirt', 'assets/dirt.png'); 
-        //this.load.image("campSquare", "assets/Web_assets/flavicon.png");
+        
+        this.MapManager = new MapManager(this);
+        this.MapManager.registerAssets(this.load);
 
         // Units
-       // this.load.image("goblin_idle", "assets/goblin_idle.png");
-        //this.load.image("goblin_attack", "assets/goblin_attack.png");
+/*         this.UnitManager = new UnitsManager(this);
+        this.UnitManager.registerAssets(this.load); */
+
     }
 
     create() {
         // Managers
-        this.mapManager = new MapManager(this);
         this.cameraManager = new CameraManager(this);
-        //this.unitManager = new UnitManager(this);
+/*         this.UnitManager.createAnimations(); */
 
         // Création map
-        this.mapManager.generateMap();
+        this.MapManager.generateMap();
+        //this.CampManager.generateCamp(); PIERRE
 
         // Gestion input
        /*  this.input.on("pointerdown", pointer => {
