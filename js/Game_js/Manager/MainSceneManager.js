@@ -12,6 +12,7 @@ export default class MainSceneManager extends Phaser.Scene {
         // Map
         this.load.image("grass", "assets/grass.png");
         this.load.image("water", "assets/water.png");
+        this.load.image('dirt', 'assets/dirt.png'); 
         //this.load.image("campSquare", "assets/Web_assets/flavicon.png");
 
         // Units
