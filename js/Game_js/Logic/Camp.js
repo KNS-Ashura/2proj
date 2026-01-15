@@ -1,3 +1,3 @@
-export class Camp extends Phaser.scene{
-    
+export default class Camp{
+    //chiffre 
 }

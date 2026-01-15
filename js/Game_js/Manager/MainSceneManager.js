@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import MapManager from "./MapManager.js";
 import CameraManager from "./CameraManager.js";
+import CampManager from "./campManager.js";
 //import UnitManager from "./UnitsManager.js";
 
 export default class MainSceneManager extends Phaser.Scene {
@@ -27,6 +28,7 @@ export default class MainSceneManager extends Phaser.Scene {
 
         // Création map
         this.mapManager.generateMap();
+        //this.CampManager.generateCamp(); PIERRE
 
         // Gestion input
        /*  this.input.on("pointerdown", pointer => {
