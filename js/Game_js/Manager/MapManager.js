@@ -20,9 +20,21 @@ export default class MapManager {
         load.image("grass", "assets/grass.png");
         load.image("water", "assets/water.png");
         load.image("dirt", "assets/dirt.png");
+        load.image("tree", "assets/tree.png");
+        load.image("pine", "assets/pineTree.png");
+        load.image("camp", "assets/camp.png");
     }
 
     generateMap() {
+        const groundPositions = [];
+        level1.forEach((row, y) => {
+            row.forEach((tileType, x) => {
+                if (tileType === 0 || tileType === 2) groundPositions.push({ x, y });
+            });
+        });
+        const campPositions = groundPositions.sort(() => Math.random() - 0.5).slice(0, 8);
+        const campKeys = new Set(campPositions.map(p => `${p.x},${p.y}`));
+
         level1.forEach((row, y) => {
             row.forEach((tileType, x) => {
                 if (tileType === 9) return;
@@ -42,6 +54,29 @@ export default class MapManager {
                 tile.setDepth(isoY);
 
                 this.mapGroup.add(tile);
+
+                const isCampPos = campKeys.has(`${x},${y}`);
+
+                if (isCampPos) {
+                    const camp = this.scene.add.image(isoX, isoY, "camp");
+                    camp.setOrigin(0.5, 0.8);
+                    camp.setDepth(isoY + 1);
+                    this.mapGroup.add(camp);
+                    this.obstacles.push(camp);
+                } else if (tileType === 0 || tileType === 2) {
+                    const clusterValue = Math.sin(x * 0.5) + Math.cos(y * 0.5);
+                    
+                    if (clusterValue > 0.5 && Math.random() > 0.3) {
+                    
+                        const treeKey = clusterValue > 1.1 ? "pine" : "tree";
+                        
+                        const tree = this.scene.add.image(isoX, isoY, treeKey);
+                        tree.setOrigin(0.5, 0.9);
+                        tree.setDepth(isoY + 1);
+                        this.mapGroup.add(tree);
+                        this.obstacles.push(tree);
+                    }
+                }
             });
         });
     }
