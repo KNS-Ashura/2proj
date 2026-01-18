@@ -1,10 +1,9 @@
-import { level1 } from "../Logic/lvldata.js";
-
 export default class MapManager {
     constructor(scene) {
         this.scene = scene;
         this.mapGroup = this.scene.add.group();
         this.obstacles = [];
+    
 
         this.TILE_WIDTH = 512;
         this.TILE_HEIGHT = 185;
@@ -12,7 +11,8 @@ export default class MapManager {
         this.TILE_MAPPING = {
             0: "grass",
             1: "water",
-            2: "dirt"
+            2: "dirt",
+            3: "camp_test"
         };
     }
 
@@ -20,10 +20,18 @@ export default class MapManager {
         load.image("grass", "assets/grass.png");
         load.image("water", "assets/water.png");
         load.image("dirt", "assets/dirt.png");
+
+        load.image("camp_test", "assets/camp_test.png");
+
+
+        load.json("level1", "js/Game_js/Logic/lvl1_data.json");
     }
 
     generateMap() {
-        level1.forEach((row, y) => {
+        const levelData = this.scene.cache.json.get("level1"); //recup les données du json
+        const tiles = levelData.tiles;
+
+        tiles.forEach((row, y) => {
             row.forEach((tileType, x) => {
                 if (tileType === 9) return;
 
