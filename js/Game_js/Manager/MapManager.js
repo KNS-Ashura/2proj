@@ -1,10 +1,9 @@
-import { level1 } from "../Logic/lvldata.js";
-
 export default class MapManager {
     constructor(scene) {
         this.scene = scene;
         this.mapGroup = this.scene.add.group();
         this.obstacles = [];
+    
 
         this.TILE_WIDTH = 512;
         this.TILE_HEIGHT = 185;
@@ -12,7 +11,8 @@ export default class MapManager {
         this.TILE_MAPPING = {
             0: "grass",
             1: "water",
-            2: "dirt"
+            2: "dirt",
+            3: "camp_test"
         };
     }
 
@@ -23,11 +23,18 @@ export default class MapManager {
         load.image("tree", "assets/tree.png");
         load.image("pine", "assets/pineTree.png");
         load.image("camp", "assets/camp.png");
+        load.image("camp_test", "assets/camp_test.png");
+        load.json("level1", "js/Game_js/Logic/lvl1_data.json");
     }
 
     generateMap() {
+        const levelData = this.scene.cache.json.get("level1"); 
+        if (!levelData || !levelData.tiles) return;
+
+        const tiles = levelData.tiles;
+
         const groundPositions = [];
-        level1.forEach((row, y) => {
+        tiles.forEach((row, y) => {
             row.forEach((tileType, x) => {
                 if (tileType === 0 || tileType === 2) groundPositions.push({ x, y });
             });
@@ -35,7 +42,7 @@ export default class MapManager {
         const campPositions = groundPositions.sort(() => Math.random() - 0.5).slice(0, 8);
         const campKeys = new Set(campPositions.map(p => `${p.x},${p.y}`));
 
-        level1.forEach((row, y) => {
+        tiles.forEach((row, y) => {
             row.forEach((tileType, x) => {
                 if (tileType === 9) return;
 
