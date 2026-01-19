@@ -27,24 +27,26 @@ export default class TopBar {
     }
 
     resize(width) {
-        // Nettoyer les anciens dessins
+
         this.graphics.clear();
 
+        //rectangle gris or
 
-
-        this.graphics.fillStyle(0x333333, 0.8); // Gris foncé
-        this.graphics.fillRoundedRect(20, 10, 150, 40, 10); // x, y, w, h, arrondi
-
-        // Dessiner le fond du CHRONO
         this.graphics.fillStyle(0x333333, 0.8);
-        this.graphics.fillRoundedRect(width / 2 - 50, 10, 100, 40, 10); // Centré
+
+        this.graphics.fillRoundedRect(20, 10, 150, 40, 10);
+
+        this.goldText.setPosition(40, 22);
 
 
+        //rectangle gris chrono
         const centerX = width / 2;
-        const positionY = 30;
+        this.graphics.fillStyle(0x333333, 0.8);
+        this.graphics.fillRoundedRect(centerX - 50, 10, 100, 40, 10);
 
-        this.timerText.setPosition(centerX, positionY);
-        this.timerText.setOrigin(0.5, 0.5);
+        // B. Placer le texte DANS ce rectangle
+        this.timerText.setPosition(centerX, 30);
+        this.timerText.setOrigin(0.5, 0.5); // Important pour le centrage parfait
     }
 
     update(time) {

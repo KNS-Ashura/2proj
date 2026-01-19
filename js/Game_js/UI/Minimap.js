@@ -1,32 +1,40 @@
 export default class Minimap {
     constructor(scene, screenWidth, screenHeight) {
         this.scene = scene;
-        // this.graphics = scene.add.graphics();
 
-        // // Paramètres de taille
-        // this.size = 150; // Coté du carré
-        // this.margin = 10; // Espace avec le bord
+        
+        this.graphics = scene.add.graphics();
 
-        // this.resize(screenWidth, screenHeight);
+        
+        this.size = 150;    // Taille du carré
+        this.margin = 20;   // Marge du bord
+
+        // Initial resize
+        this.resize(screenWidth, screenHeight);
     }
 
     resize(width, height) {
-        //     this.graphics.clear();
+        // Toujours nettoyer avant de redessiner
+        this.graphics.clear();
 
-        //     // 1. Calculer la position X et Y du coin haut-gauche de la minimap
-        //     // Elle doit être collée en bas à droite
-        //     const x = width - this.size - this.margin;
-        //     const y = height - this.size - this.margin;
+        //positionnement en bas à droite
+        const x = width - this.size - this.margin;
+        const y = height - this.size - this.margin;
 
-        //     // 2. Dessiner le fond noir semi-transparent
-        //     // ... À TOI DE JOUER
+        // valeur pour quand on en aura besoin plus tard dans update
+        this.x = x;
+        this.y = y;
 
-        //     // 3. Dessiner la bordure blanche (strokeRect)
-        //     // ... À TOI DE JOUER
+        // fond (transparent)
+        this.graphics.fillStyle(0x000000, 0.8); // Noir, opacité 80%
+        this.graphics.fillRect(x, y, this.size, this.size);
+
+        // bordure
+        this.graphics.lineStyle(3, 0xffffff); // Blanc, 3px
+        this.graphics.strokeRect(x, y, this.size, this.size);
     }
 
     update() {
-        // Pour l'instant, laisse vide ou mets un commentaire TODO
-        // Plus tard, c'est ici qu'on dessinera les points des unités
+        // on met rien ici en attendant d'implémenter la map dans la minimap
     }
 }
