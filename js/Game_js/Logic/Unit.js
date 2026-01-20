@@ -1,5 +1,5 @@
 export default class Unit {
-    constructor({ hp, name, walkSpeed, hitSpeed, buildTime, range, price }) {
+    constructor({ hp, name, walkSpeed, hitSpeed, buildTime, range, price, frameWidth, frameHeight}) {
         this.hp = hp;
         this.name = name;
         this.walkSpeed = walkSpeed;
@@ -7,7 +7,9 @@ export default class Unit {
         this.buildTime = buildTime;
         this.range = range;
         this.price = price;
-        this.state = "idle";
+        this.state = "Idle";
+        this.frameWidth = frameWidth,
+        this.frameHeight = frameHeight
     }
 
     setState(state) {

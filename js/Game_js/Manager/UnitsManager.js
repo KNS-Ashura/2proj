@@ -1,36 +1,51 @@
 export default class UnitsManager {
     constructor(scene) {
         this.scene = scene;
+        this.registeredUnits = new Set();
     }
 
-    registerAssets(load, unitNames) {
-        unitNames.forEach(name => {
+    // À appeler UNE SEULE FOIS (dans preload)
+    registerAssets(load, units) {
+        units.forEach(unit => {
+
             load.spritesheet(
-                `${name}_idle`,
-                `assets/units/${name}/idle.png`,
-                { frameWidth: 368, frameHeight: 230 }
+                `${unit.name}_Idle.png`,
+                `assets/Game_assets/units/${unit.name}_Idle.png`,
+                {
+                    frameWidth: unit.frameWidth,
+                    frameHeight: unit.frameHeight
+                }
             );
         });
     }
 
-    createAnimations(unitNames) {
-        unitNames.forEach(name => {
-            this.scene.anims.create({
-                key: `${name}_idle`,
-                frames: this.scene.anims.generateFrameNumbers(
-                    `${name}_idle`,
-                    { start: 0, end: 3 }
-                ),
-                frameRate: 6,
-                repeat: -1
-            });
+    createAnimations(unit) {
+        const key = `${unit.name}_Idle.png`;
+
+        if (this.scene.anims.exists(key)) return;
+
+        this.scene.anims.create({
+            key,
+            frames: this.scene.anims.generateFrameNumbers(key, {
+                start: 0,
+                end: 7
+            }),
+            frameRate: 6,
+            repeat: -1
         });
     }
 
     spawn(x, y, unit) {
-        const sprite = this.scene.add.sprite(x, y, `${unit.name}_idle`);
-        sprite.play(`${unit.name}_idle`);
-        sprite.unitData = unit;
+        this.scene.add.circle(x, y, 5, 0xff0000);
+         console.log("Spawn at:", x, y);
+        const key = `${unit.name}_Idle.png`;
+
+        this.createAnimations(unit);
+
+        const sprite = this.scene.add.sprite(x, y, key);
+        sprite.play(key);
+        sprite.unit = unit;
+
         return sprite;
     }
 }
