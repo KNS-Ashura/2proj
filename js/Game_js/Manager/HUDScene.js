@@ -10,36 +10,36 @@ export default class HUDScene extends Phaser.Scene {
     create() {
         console.log("HUD Scene Started");
 
+        // 1. Récupérer les dimensions de l'écran
         const { width, height } = this.scale;
 
-        // Instancier la TopBar (
+        // 2. Instancier les 3 composants visuels
+        // On passe 'this' (la scène) pour qu'ils puissent dessiner dedans
         this.topBar = new TopBar(this, width);
-
-
-        // Instancier la Minimap
+        this.mainMenu = new MainMenu(this, width, height);
         this.minimap = new Minimap(this, width, height);
 
-
-        // this.mainMenu = new MainMenu(this, width, height); pour le menu principal plus tard
-
+        // 3. Gérer le redimensionnement de la fenêtre (Responsive)
         this.scale.on('resize', (gameSize) => {
             this.resize(gameSize.width, gameSize.height);
         });
+
+        // 4. (Futur) C'est ici qu'on écoutera les événements du jeu
+        // this.setupEventListeners();
     }
 
     update(time, delta) {
-        this.topBar.update(time);
+        // Mise à jour du chrono dans la TopBar
+        if (this.topBar) this.topBar.update(time);
 
-
+        // Mise à jour de la minimap (positions des points)
         if (this.minimap) this.minimap.update();
     }
 
     resize(width, height) {
-        this.topBar.resize(width);
-
-
-        if (this.minimap) {
-            this.minimap.resize(width, height);
-        }
+        // On ordonne à chaque composant de se replacer
+        if (this.topBar) this.topBar.resize(width);
+        if (this.mainMenu) this.mainMenu.resize(width, height);
+        if (this.minimap) this.minimap.resize(width, height);
     }
 }
