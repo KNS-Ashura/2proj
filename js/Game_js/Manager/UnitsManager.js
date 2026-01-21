@@ -8,7 +8,6 @@ export default class UnitsManager {
         this.offsetY = 200;
     }
 
-    // À appeler UNE SEULE FOIS (dans preload)
     registerAssets(load, units) {
         units.forEach(unit => {
 
@@ -60,7 +59,6 @@ export default class UnitsManager {
         sprite.play(key);
         sprite.unit = unit;
 
-        // mémoriser la position logique
         sprite.tileX = tileX;
         sprite.tileY = tileY;
 
