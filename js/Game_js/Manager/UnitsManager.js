@@ -1,7 +1,11 @@
+import MapManager from "./MapManager";
+
 export default class UnitsManager {
     constructor(scene) {
         this.scene = scene;
         this.registeredUnits = new Set();
+        this.offsetX = 800;
+        this.offsetY = 200;
     }
 
     // À appeler UNE SEULE FOIS (dans preload)
@@ -35,17 +39,32 @@ export default class UnitsManager {
         });
     }
 
-    spawn(x, y, unit) {
-        this.scene.add.circle(x, y, 5, 0xff0000);
-         console.log("Spawn at:", x, y);
+    spawn(tileX, tileY, unit) {
+        const map = this.scene.MapManager;
+
+        const isoX =
+            (tileX - tileY) * (map.TILE_WIDTH / 2) + map.offsetX;
+
+        const isoY =
+            (tileX + tileY) * (map.TILE_HEIGHT / 2) + map.offsetY;
+
         const key = `${unit.name}_Idle.png`;
 
         this.createAnimations(unit);
 
-        const sprite = this.scene.add.sprite(x, y, key);
+        const sprite = this.scene.add.sprite(isoX, isoY, key);
+
+        sprite.setOrigin(0.5, 0.9);
+        sprite.setDepth(isoY + 2);
+
         sprite.play(key);
         sprite.unit = unit;
 
+        // mémoriser la position logique
+        sprite.tileX = tileX;
+        sprite.tileY = tileY;
+
         return sprite;
     }
+
 }

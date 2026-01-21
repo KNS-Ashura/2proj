@@ -8,6 +8,9 @@ export default class MapManager {
         this.TILE_WIDTH = 512;
         this.TILE_HEIGHT = 185;
 
+        this.offsetX = 800;
+        this.offsetY = 200;
+
         this.TILE_MAPPING = {
             0: "grass",
             1: "water",

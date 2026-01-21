@@ -7,6 +7,8 @@ import UnitsManager from "./UnitsManager.js";
 export default class MainSceneManager extends Phaser.Scene {
     constructor() {
         super({ key: "MainScene" });
+        this.offsetX = 800;
+        this.offsetY = 200;
     }
 
     preload() {
@@ -49,14 +51,11 @@ export default class MainSceneManager extends Phaser.Scene {
         this.MapManager.generateMap();
         //this.CampManager.generateCamp(); PIERRE
         
-        // Création anims
+        // Animations (optionnel ici, spawn peut le faire)
         this.UnitsManager.createAnimations(this.units[0]);
-        this.playerSprite = this.UnitsManager.spawn(0, 0, this.units[0]);
 
-        // Gestion input
-       /*  this.input.on("pointerdown", pointer => {
-            this.unitManager.spawnAtPointer(pointer);
-        }); */
+        // Spawn du joueur
+        this.playerSprite = this.UnitsManager.spawn(5 ,5 ,this.units[0]);
     }
 
 /*     update(time, delta) {
