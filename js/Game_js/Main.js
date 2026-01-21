@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-//importing classes 
 
 import MainScene from "./Manager/MainSceneManager.js";
 
