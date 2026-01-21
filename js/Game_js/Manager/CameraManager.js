@@ -14,7 +14,7 @@ export default class CameraManager {
         this.scene.input.on("wheel", (pointer, gameObjects, deltaX, deltaY) => {
             if (deltaY > 0) {
                 const newZoom = this.camera.zoom - 0.1;
-                if (newZoom > 0.3) this.camera.setZoom(newZoom);
+                if (newZoom > 0.09) this.camera.setZoom(newZoom);
             } else {
                 const newZoom = this.camera.zoom + 0.1;
                 if (newZoom < 2.5) this.camera.setZoom(newZoom);
