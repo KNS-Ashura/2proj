@@ -1,11 +1,14 @@
-import MapManager from "./MapManager";
+import AnimationsManager from "./AnimationsManager";
 
 export default class UnitsManager {
-    constructor(scene) {
+    constructor(scene,anim) {
         this.scene = scene;
+        this.anim = anim
         this.registeredUnits = new Set();
         this.offsetX = 800;
         this.offsetY = 200;
+
+        this.animationsManager = new AnimationsManager(scene);
     }
 
     registerAssets(load, units) {
@@ -19,23 +22,29 @@ export default class UnitsManager {
                     frameHeight: unit.frameHeight
                 }
             );
+
+            load.spritesheet(
+                `${unit.name}_Walk.png`,
+                `assets/Game_assets/units/${unit.name}_Walk.png`,
+                {
+                    frameWidth: unit.frameWidth,
+                    frameHeight: unit.frameHeight
+                }
+            );
+
+            load.spritesheet(
+                `${unit.name}_Die.png`,
+                `assets/Game_assets/units/${unit.name}_Die.png`,
+                {
+                    frameWidth: unit.frameWidth,
+                    frameHeight: unit.frameHeight
+                }
+            );
         });
     }
 
-    createAnimations(unit) {
-        const key = `${unit.name}_Idle.png`;
-
-        if (this.scene.anims.exists(key)) return;
-
-        this.scene.anims.create({
-            key,
-            frames: this.scene.anims.generateFrameNumbers(key, {
-                start: 0,
-                end: 7
-            }),
-            frameRate: 6,
-            repeat: -1
-        });
+    createAllAnimations(unit) {
+        this.animationsManager.createAnimations()
     }
 
     spawn(tileX, tileY, unit) {

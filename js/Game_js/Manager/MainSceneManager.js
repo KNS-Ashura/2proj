@@ -33,7 +33,7 @@ export default class MainSceneManager extends Phaser.Scene {
 
         this.units = [character0];
 
-        this.UnitsManager = new UnitsManager(this);
+        this.UnitsManager = new UnitsManager(this,);
         this.UnitsManager.registerAssets(this.load, this.units);
 
 
