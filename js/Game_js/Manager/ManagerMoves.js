@@ -34,9 +34,9 @@ export default class MovesManager {
         return { x: tileX, y: tileY };
     }
 
-    /**
-     * Convertit les coordonnées de tuile en coordonnées monde
-     */
+    
+    // Convertit les coordonnées de tuile en coordonnées monde
+     
     tileToWorld(tileX, tileY) {
         const worldX = (tileX - tileY) * (this.tileWidth / 2) + this.offsetX;
         const worldY = (tileX + tileY) * (this.tileHeight / 2) + this.offsetY;
@@ -156,7 +156,7 @@ export default class MovesManager {
         // Désactiver le menu contextuel sur clic droit
         this.scene.input.mouse.disableContextMenu();
 
-        // Événement pointerdown
+
         this.scene.input.on('pointerdown', (pointer, targets) => {
             // Si on clique sur une unité, ne pas démarrer la box selection
             if (targets.length > 0) {
@@ -170,14 +170,14 @@ export default class MovesManager {
                 this.startPoint.x = pointer.worldX;
                 this.startPoint.y = pointer.worldY;
             } else if (pointer.leftButtonDown()) {
-                // Clic gauche = déplacer les unités sélectionnées
+                // Clic gauche = déplacement
                 if (this.selectedUnits.length > 0) {
                     this.moveUnitsTo(pointer.worldX, pointer.worldY);
                 }
             }
         });
 
-        // Événement pointermove
+
         this.scene.input.on('pointermove', (pointer) => {
             if (!this.isSelecting) return;
 
@@ -199,7 +199,7 @@ export default class MovesManager {
             }
         });
 
-        // Événement pointerup
+        
         this.scene.input.on('pointerup', (pointer, targets) => {
             if (!this.isSelecting) return;
 
@@ -270,10 +270,10 @@ export default class MovesManager {
         if (this.selectedUnits.length === 0) return;
 
         if (this.selectedUnits.length === 1) {
-            // Une seule unité : déplacement simple
+            // Une seule unité donc déplacement simple
             this.moveUnitTo(this.selectedUnits[0], x, y);
         } else {
-            // Plusieurs unités : formation
+            // Plusieurs unités donc formation (type armée ou groupe de soldats)
             this.moveUnitsInFormation(x, y);
         }
     }
