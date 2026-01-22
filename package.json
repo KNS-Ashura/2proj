@@ -4,6 +4,7 @@
   "description": "��#\u0000 \u0000S\u0000u\u0000p\u0000-\u0000K\u0000o\u0000n\u0000_\u0000Q\u0000u\u0000e\u0000s\u0000t\u0000\r\u0000 \u0000\r\u0000 \u0000n\u0000p\u0000m\u0000 \u0000i\u0000n\u0000i\u0000t\u0000 \u0000-\u0000y\u0000\r\u0000 \u0000n\u0000p\u0000m\u0000 \u0000i\u0000n\u0000s\u0000t\u0000a\u0000l\u0000l\u0000 \u0000e\u0000x\u0000p\u0000r\u0000e\u0000s\u0000s\u0000 \u0000s\u0000o\u0000c\u0000k\u0000e\u0000t\u0000.\u0000i\u0000o\u0000 \u0000p\u0000g\u0000 \u0000b\u0000c\u0000r\u0000y\u0000p\u0000t\u0000 \u0000j\u0000s\u0000o\u0000n\u0000w\u0000e\u0000b\u0000t\u0000o\u0000k\u0000e\u0000n\u0000\r\u0000 \u0000\r\u0000 \u0000c\u0000o\u0000p\u0000i\u0000e\u0000r\u0000 \u0000c\u0000a\u0000 \u0000d\u0000a\u0000n\u0000s\u0000 \u0000l\u0000e\u0000 \u0000t\u0000e\u0000r\u0000m\u0000i\u0000n\u0000a\u0000l\u0000\r\u0000 \u0000",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +23,12 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.16.3",
+    "phaser": "^3.90.0",
     "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
   }
 }
+
+
