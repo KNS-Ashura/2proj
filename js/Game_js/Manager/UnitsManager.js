@@ -18,23 +18,80 @@ export default class UnitsManager {
                     frameWidth: unit.frameWidth,
                     frameHeight: unit.frameHeight
                 }
-            );
+            )
+
+            load.spritesheet(
+                `${unit.name}_Walk.png`,
+                `assets/Game_assets/units/${unit.name}_Walk.png`,
+                {
+                    frameWidth: unit.frameWidth,
+                    frameHeight: unit.frameHeight
+                }
+            )
+
+            load.spritesheet(
+                `${unit.name}_Run.png`,
+                `assets/Game_assets/units/${unit.name}_Run.png`,
+                {
+                    frameWidth: unit.frameWidth,
+                    frameHeight: unit.frameHeight
+                }
+            )
+
         });
     }
 
-    createAnimations(unit) {
+    createAnimationsIdle(unit) {
         const key = `${unit.name}_Idle.png`;
+        const directions = ['F', 'F_S', 'S', 'B_S', 'B'];
 
-        if (this.scene.anims.exists(key)) return;
+        let start = 0;
+        let end = 7;
 
-        this.scene.anims.create({
-            key,
-            frames: this.scene.anims.generateFrameNumbers(key, {
-                start: 0,
-                end: 7
-            }),
-            frameRate: 6,
-            repeat: -1
+        directions.forEach(dir => {
+            const animKey = `${unit.name}_Idle_${dir}`;
+
+            if (this.scene.anims.exists(animKey)) return;
+
+            this.scene.anims.create({
+                key: animKey,
+                frames: this.scene.anims.generateFrameNumbers(key, {
+                    start: start,
+                    end: end
+                }),
+                frameRate: 6,
+                repeat: -1
+            });
+
+            start += 8;
+            end += 8;
+        });
+    }
+
+    createAnimationsRun(unit) {
+        const key = `${unit.name}_Run.png`;
+        const directions = ['F', 'F_S', 'S', 'B_S', 'B'];
+
+        let start = 0;
+        let end = 3;
+
+        directions.forEach(dir => {
+            const animKey = `${unit.name}_Run_${dir}`;
+
+            if (this.scene.anims.exists(animKey)) return;
+
+            this.scene.anims.create({
+                key: animKey,
+                frames: this.scene.anims.generateFrameNumbers(key, {
+                    start: start,
+                    end: end
+                }),
+                frameRate: 6,
+                repeat: -1
+            });
+
+            start += 4;
+            end += 4;
         });
     }
 
@@ -47,16 +104,15 @@ export default class UnitsManager {
         const isoY =
             (tileX + tileY) * (map.TILE_HEIGHT / 2) + map.offsetY;
 
-        const key = `${unit.name}_Idle.png`;
+        this.createAnimationsIdle(unit);
+        this.createAnimationsRun(unit);
 
-        this.createAnimations(unit);
+        const sprite = this.scene.add.sprite(isoX, isoY, `${unit.name}_Idle.png`);
 
-        const sprite = this.scene.add.sprite(isoX, isoY, key);
-
-        sprite.setOrigin(0.5, 0.9);
+        sprite.setOrigin(1, 0.9);
         sprite.setDepth(isoY + 2);
 
-        sprite.play(key);
+        sprite.play(`${unit.name}_Run_B`);
         sprite.unit = unit;
 
         sprite.tileX = tileX;
