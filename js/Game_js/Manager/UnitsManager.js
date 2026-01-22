@@ -8,21 +8,12 @@ export default class UnitsManager {
         this.offsetY = 200;
     }
 
-    registerAssets(load, units) {
-        units.forEach(unit => {
+    registerAssets(load, unitsList) {
+        unitsList.forEach(unit => {
 
             load.spritesheet(
                 `${unit.name}_Idle.png`,
                 `assets/Game_assets/units/${unit.name}_Idle.png`,
-                {
-                    frameWidth: unit.frameWidth,
-                    frameHeight: unit.frameHeight
-                }
-            )
-
-            load.spritesheet(
-                `${unit.name}_Walk.png`,
-                `assets/Game_assets/units/${unit.name}_Walk.png`,
                 {
                     frameWidth: unit.frameWidth,
                     frameHeight: unit.frameHeight
@@ -38,6 +29,13 @@ export default class UnitsManager {
                 }
             )
 
+        });
+    }
+
+    createAllAnimations(unitsList){
+        unitsList.forEach(unit => {
+            this.createAnimationsIdle(unit);
+            this.createAnimationsRun(unit);
         });
     }
 
@@ -104,15 +102,12 @@ export default class UnitsManager {
         const isoY =
             (tileX + tileY) * (map.TILE_HEIGHT / 2) + map.offsetY;
 
-        this.createAnimationsIdle(unit);
-        this.createAnimationsRun(unit);
-
         const sprite = this.scene.add.sprite(isoX, isoY, `${unit.name}_Idle.png`);
 
         sprite.setOrigin(1, 0.9);
         sprite.setDepth(isoY + 2);
 
-        sprite.play(`${unit.name}_Run_B`);
+        sprite.play(`${unit.name}_Idle_S`);
         sprite.unit = unit;
 
         sprite.tileX = tileX;

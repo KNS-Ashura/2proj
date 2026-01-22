@@ -31,10 +31,10 @@ export default class MainSceneManager extends Phaser.Scene {
             frameHeight: 460
         });
 
-        this.units = [character0];
+        this.unitsList = [character0];
 
         this.UnitsManager = new UnitsManager(this);
-        this.UnitsManager.registerAssets(this.load, this.units);
+        this.UnitsManager.registerAssets(this.load, this.unitsList);
 
 
 
@@ -51,8 +51,9 @@ export default class MainSceneManager extends Phaser.Scene {
         this.MapManager.generateMap();
         //this.CampManager.generateCamp(); PIERRE
 
-        // Spawn du joueur
-        this.playerSprite = this.UnitsManager.spawn(10 ,10 ,this.units[0]);
+
+        this.UnitsManager.createAllAnimations(this.unitsList);
+        this.playerSprite = this.UnitsManager.spawn(10 ,10 ,this.unitsList[0]);
     }
 
 /*     update(time, delta) {
