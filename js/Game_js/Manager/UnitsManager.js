@@ -11,8 +11,8 @@ export default class UnitsManager {
         this.animationsManager = new AnimationsManager(scene);
     }
 
-    registerAssets(load, units) {
-        units.forEach(unit => {
+    registerAssets(load, unitsList) {
+        unitsList.forEach(unit => {
 
             load.spritesheet(
                 `${unit.name}_Idle.png`,
@@ -21,30 +21,79 @@ export default class UnitsManager {
                     frameWidth: unit.frameWidth,
                     frameHeight: unit.frameHeight
                 }
-            );
+            )
 
             load.spritesheet(
-                `${unit.name}_Walk.png`,
-                `assets/Game_assets/units/${unit.name}_Walk.png`,
+                `${unit.name}_Run.png`,
+                `assets/Game_assets/units/${unit.name}_Run.png`,
                 {
                     frameWidth: unit.frameWidth,
                     frameHeight: unit.frameHeight
                 }
-            );
+            )
 
-            load.spritesheet(
-                `${unit.name}_Die.png`,
-                `assets/Game_assets/units/${unit.name}_Die.png`,
-                {
-                    frameWidth: unit.frameWidth,
-                    frameHeight: unit.frameHeight
-                }
-            );
         });
     }
 
-    createAllAnimations(unit) {
-        this.animationsManager.createAnimations()
+    createAllAnimations(unitsList){
+        unitsList.forEach(unit => {
+            this.createAnimationsIdle(unit);
+            this.createAnimationsRun(unit);
+        });
+    }
+
+    createAnimationsIdle(unit) {
+        const key = `${unit.name}_Idle.png`;
+        const directions = ['F', 'F_S', 'S', 'B_S', 'B'];
+
+        let start = 0;
+        let end = 7;
+
+        directions.forEach(dir => {
+            const animKey = `${unit.name}_Idle_${dir}`;
+
+            if (this.scene.anims.exists(animKey)) return;
+
+            this.scene.anims.create({
+                key: animKey,
+                frames: this.scene.anims.generateFrameNumbers(key, {
+                    start: start,
+                    end: end
+                }),
+                frameRate: 6,
+                repeat: -1
+            });
+
+            start += 8;
+            end += 8;
+        });
+    }
+
+    createAnimationsRun(unit) {
+        const key = `${unit.name}_Run.png`;
+        const directions = ['F', 'F_S', 'S', 'B_S', 'B'];
+
+        let start = 0;
+        let end = 3;
+
+        directions.forEach(dir => {
+            const animKey = `${unit.name}_Run_${dir}`;
+
+            if (this.scene.anims.exists(animKey)) return;
+
+            this.scene.anims.create({
+                key: animKey,
+                frames: this.scene.anims.generateFrameNumbers(key, {
+                    start: start,
+                    end: end
+                }),
+                frameRate: 6,
+                repeat: -1
+            });
+
+            start += 4;
+            end += 4;
+        });
     }
 
     spawn(tileX, tileY, unit) {
@@ -56,16 +105,12 @@ export default class UnitsManager {
         const isoY =
             (tileX + tileY) * (map.TILE_HEIGHT / 2) + map.offsetY;
 
-        const key = `${unit.name}_Idle.png`;
+        const sprite = this.scene.add.sprite(isoX, isoY, `${unit.name}_Idle.png`);
 
-        this.createAnimations(unit);
-
-        const sprite = this.scene.add.sprite(isoX, isoY, key);
-
-        sprite.setOrigin(0.5, 0.9);
+        sprite.setOrigin(1, 0.9);
         sprite.setDepth(isoY + 2);
 
-        sprite.play(key);
+        sprite.play(`${unit.name}_Idle_S`);
         sprite.unit = unit;
 
         sprite.tileX = tileX;
