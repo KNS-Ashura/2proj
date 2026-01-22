@@ -1,5 +1,3 @@
-import AnimationsManager from "./AnimationsManager";
-
 export default class UnitsManager {
     constructor(scene,anim) {
         this.scene = scene;
@@ -7,8 +5,6 @@ export default class UnitsManager {
         this.registeredUnits = new Set();
         this.offsetX = 800;
         this.offsetY = 200;
-
-        this.animationsManager = new AnimationsManager(scene);
     }
 
     registerAssets(load, unitsList) {
