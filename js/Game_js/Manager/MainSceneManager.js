@@ -3,6 +3,7 @@ import MapManager from "./MapManager.js";
 import CameraManager from "./CameraManager.js";
 import Unit from "../Logic/Unit.js";
 import UnitsManager from "./UnitsManager.js";
+import MovesManager from "./ManagerMoves.js";
 
 export default class MainSceneManager extends Phaser.Scene {
     constructor() {
@@ -13,7 +14,7 @@ export default class MainSceneManager extends Phaser.Scene {
 
     preload() {
         // Map
-        
+
         this.MapManager = new MapManager(this);
         this.MapManager.registerAssets(this.load);
 
@@ -28,7 +29,7 @@ export default class MainSceneManager extends Phaser.Scene {
             range: 1,
             price: 0,
             frameWidth: 460,
-            frameHeight: 575
+            frameHeight: 555
         });
 
         this.units = [character0];
@@ -40,25 +41,29 @@ export default class MainSceneManager extends Phaser.Scene {
 
     }
 
-    
+
 
     create() {
         // Managers
         this.cameraManager = new CameraManager(this);
-/*         this.UnitManager.createAnimations(); */
+        this.movesManager = new MovesManager(this);
 
         // Création map
         this.MapManager.generateMap();
-        //this.CampManager.generateCamp(); PIERRE
-        
+
         // Animations (optionnel ici, spawn peut le faire)
         this.UnitsManager.createAnimations(this.units[0]);
 
         // Spawn du joueur
-        this.playerSprite = this.UnitsManager.spawn(5 ,5 ,this.units[0]);
+        this.playerSprite = this.UnitsManager.spawn(5, 5, this.units[0]);
+
+        // Activer la physique sur le sprite et l'enregistrer pour les mouvements
+        this.physics.add.existing(this.playerSprite);
+        this.movesManager.registerUnit(this.playerSprite);
+        this.movesManager.setupSceneClickHandler();
     }
 
-/*     update(time, delta) {
-        this.unitManager.update(time, delta);
-    } */
+    update() {
+        this.movesManager.update();
+    }
 }

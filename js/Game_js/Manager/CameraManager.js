@@ -10,6 +10,7 @@ export default class CameraManager {
     }
 
     setupInput() {
+
         // Zoom
         this.scene.input.on("wheel", (pointer, gameObjects, deltaX, deltaY) => {
             if (deltaY > 0) {
@@ -21,9 +22,10 @@ export default class CameraManager {
             }
         });
 
-        // Drag
+        // Drag (uniquement avec clic gauche)
         this.scene.input.on("pointermove", pointer => {
             if (!pointer.isDown) return;
+            if (!pointer.leftButtonDown()) return; // Seulement clic gauche pour la caméra
             this.camera.scrollX -= (pointer.x - pointer.prevPosition.x) / this.camera.zoom;
             this.camera.scrollY -= (pointer.y - pointer.prevPosition.y) / this.camera.zoom;
         });
