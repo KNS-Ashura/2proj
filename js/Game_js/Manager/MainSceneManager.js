@@ -54,7 +54,8 @@ export default class MainSceneManager extends Phaser.Scene {
 
 
         // Spawn du joueur
-        this.playerSprite = this.UnitsManager.spawn(5, 5, this.units[0]);
+        this.UnitsManager.createAllAnimations(this.unitsList);
+        this.playerSprite = this.UnitsManager.spawn(5, 5, this.unitsList[0]);
 
         // Activer la physique sur le sprite et l'enregistrer pour les mouvements
         this.physics.add.existing(this.playerSprite);

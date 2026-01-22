@@ -107,7 +107,7 @@ export default class UnitsManager {
         sprite.setOrigin(1, 0.9);
         sprite.setDepth(isoY + 2);
 
-        sprite.play(`${unit.name}_Idle_S`);
+        sprite.play(`${unit.name}_Run_B`);
         sprite.unit = unit;
 
         sprite.tileX = tileX;
