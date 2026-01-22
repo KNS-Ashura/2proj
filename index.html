@@ -2,19 +2,35 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/Web_style/Main_style.css">
-    <title>Document</title>
+    <title>Sup-Kon-Quest</title>
+    <link rel="stylesheet" href="css/menu.css">
 </head>
 <body>
-    <header>
-        
-    </header>
-    <main>
+    <div id="menu-container">
+        <div class="menu-content">
+            <h1>Sup-Kon-Quest</h1>
+            <div class="btn-group">
+                <button id="play-btn">JOUER</button>
+                <button id="settings-btn">PARAMÈTRES</button>
+            </div>
+        </div>
+    </div>
 
-    </main>
-    <footer>
+    <script type="module">
+        const playBtn = document.getElementById('play-btn');
+        const menu = document.getElementById('menu-container');
+        playBtn.addEventListener('click', () => {
+            menu.style.display = 'none';
+            import('./js/Game_js/Main.js').then(() => {
+                console.log("Jeu lancé !");
+            }).catch(err => {
+                console.error("Erreur lors du lancement du jeu :", err);
+            });
+        });
 
-    </footer>
+        document.getElementById('settings-btn').addEventListener('click', () => {
+            alert('Paramètres : Fonctionnalité à venir !');
+        });
+    </script>
 </body>
 </html>
