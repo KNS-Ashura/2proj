@@ -15,4 +15,21 @@ export default class Unit {
     setState(state) {
         this.state = state;
     }
+
+    getIsoDirection(dx, dy) {
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+
+        if (angle < -112.5 && angle >= -157.5) return 'B';
+        if (angle < -67.5 && angle >= -112.5) return 'B_S';
+
+
+        if (angle >= 157.5 || angle < -157.5) return 'S';
+
+
+        if (angle >= 67.5 && angle < 112.5) return 'F_S';
+        if (angle >= 22.5 && angle < 67.5) return 'F';
+
+        return 'S';
+    }
 }

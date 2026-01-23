@@ -339,12 +339,48 @@ export default class MovesManager {
                 }
             }
 
+            this.updateUnitAnimation(sprite);
+
             // Mettre à jour la position du cercle de sélection
             if (sprite.selectionCircle) {
                 sprite.selectionCircle.setPosition(sprite.x, sprite.y);
                 sprite.selectionCircle.setDepth(sprite.depth + 1);
             }
         });
+    }
+
+        updateUnitAnimation(sprite) {
+        if (!sprite.body) return;
+
+        const vx = sprite.body.velocity.x;
+        const vy = sprite.body.velocity.y;
+
+        const speed = Math.abs(vx) + Math.abs(vy);
+
+        // Idle
+        if (speed < 1) {
+            if (!sprite.anims.isPlaying || !sprite.anims.currentAnim.key.includes('Idle')) {
+                sprite.anims.play(`Idle_${sprite.lastDir}`, true);
+            }
+            return;
+        }
+
+        // Walk
+        const dir = sprite.unit.getIsoDirection(vx, vy);
+        sprite.lastDir = dir;
+
+        // Mirror pour droite
+        if (vx > 0 && dir === 'S') {
+            sprite.setFlipX(true);
+        } else {
+            sprite.setFlipX(false);
+        }
+
+        const animKey = `Character0_Run_${dir}`;
+
+        if (!sprite.anims.isPlaying || sprite.anims.currentAnim.key !== animKey) {
+            sprite.anims.play(animKey, true);
+        }
     }
 
 
