@@ -360,7 +360,7 @@ export default class MovesManager {
         // Idle
         if (speed < 1) {
             if (!sprite.anims.isPlaying || !sprite.anims.currentAnim.key.includes('Idle')) {
-                sprite.anims.play(`Idle_${sprite.lastDir}`, true);
+                sprite.anims.play(`Character0_Idle_${sprite.lastDir}`, true);
             }
             return;
         }
