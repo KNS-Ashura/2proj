@@ -26,11 +26,10 @@ export default class MapManager {
         load.image("tree", "assets/tree.png");
         load.image("pine", "assets/pineTree.png");
         load.image("camp", "assets/camp.png");
-        load.image("camp_test", "assets/camp_test.png");
         load.json("level1", "js/Game_js/Logic/lvl1_data.json");
     }
 
-    generateMap() {
+    generateMap(playerCount = 2) {
         const levelData = this.scene.cache.json.get("level1"); 
         if (!levelData || !levelData.tiles) return;
 
@@ -42,8 +41,10 @@ export default class MapManager {
                 if (tileType === 0 || tileType === 2) groundPositions.push({ x, y });
             });
         });
-        const campPositions = groundPositions.sort(() => Math.random() - 0.5).slice(0, 8);
-        const campKeys = new Set(campPositions.map(p => `${p.x},${p.y}`));
+
+        // Sélectionne exactement le nombre de positions nécessaire pour les joueurs
+        const campPositions = groundPositions.sort(() => Math.random() - 0.5).slice(0, playerCount);
+        const campData = new Map(campPositions.map((p, i) => [`${p.x},${p.y}`, i]));
 
         tiles.forEach((row, y) => {
             row.forEach((tileType, x) => {
@@ -65,10 +66,15 @@ export default class MapManager {
 
                 this.mapGroup.add(tile);
 
-                const isCampPos = campKeys.has(`${x},${y}`);
+                const playerIdx = campData.get(`${x},${y}`);
 
-                if (isCampPos) {
-                    const camp = this.scene.add.image(isoX, isoY, "camp");
+                if (playerIdx !== undefined) {
+                    const camp = this.scene.add.image(isoX, isoY, "camp", 0);
+                    
+                    // Palette de couleurs pour différencier les joueurs (Rouge, Bleu, Vert, Jaune, etc.)
+                    const playerColors = [0xff4d4d, 0x4d79ff, 0x4dff4d, 0xffff4d, 0xff4dff, 0x4dffff, 0xffa64d, 0xffffff];
+                    camp.setTint(playerColors[playerIdx]);
+
                     camp.setOrigin(0.5, 0.8);
                     camp.setDepth(isoY + 1);
                     this.mapGroup.add(camp);

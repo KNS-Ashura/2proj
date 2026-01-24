@@ -40,12 +40,35 @@
         }
         button:hover { background: #d35400; transform: scale(1.05); }
         button:active { transform: scale(0.95); }
+        select {
+            padding: 10px;
+            font-size: 1.1rem;
+            background: #2c3e50;
+            color: white;
+            border: 1px solid #e67e22;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #e67e22; }
     </style>
 </head>
 <body>
     <div id="menu-container">
         <h1>Sup-Kon-Quest</h1>
         <div class="btn-group">
+            <div style="margin-bottom: 20px;">
+                <label for="player-count">NOMBRE DE JOUEURS</label>
+                <select id="player-count">
+                    <option value="2">2 JOUEURS</option>
+                    <option value="3">3 JOUEURS</option>
+                    <option value="4">4 JOUEURS</option>
+                    <option value="5">5 JOUEURS</option>
+                    <option value="6">6 JOUEURS</option>
+                    <option value="7">7 JOUEURS</option>
+                    <option value="8">8 JOUEURS</option>
+                </select>
+            </div>
             <button id="play-btn">JOUER</button>
             <button id="settings-btn">PARAMÈTRES</button>
         </div>
@@ -55,6 +78,7 @@
         const playBtn = document.getElementById('play-btn');
         const menu = document.getElementById('menu-container');
         playBtn.addEventListener('click', () => {
+            window.playerCount = parseInt(document.getElementById('player-count').value);
             menu.style.display = 'none';
             import('./js/Game_js/Main.js').then(() => {
                 console.log("Jeu lancé !");

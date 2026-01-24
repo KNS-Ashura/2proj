@@ -48,7 +48,7 @@ export default class MainSceneManager extends Phaser.Scene {
 /*         this.UnitManager.createAnimations(); */
 
         // Création map
-        this.MapManager.generateMap();
+        this.MapManager.generateMap(window.playerCount || 2);
         //this.CampManager.generateCamp(); PIERRE
         
         // Animations (optionnel ici, spawn peut le faire)
