@@ -27,9 +27,7 @@
     <script type="text/javascript">
         function startGame() {
             const playerCount = parseInt(document.getElementById('playerCount').value);
-            const isDefined = document.getElementById('spawnDefined').checked;
-            const spawnMode = isDefined ? 'sides' : 'circle';
-            window.gameConfig = { playerCount, spawnMode };
+            window.gameConfig = { playerCount };
             document.getElementById('menu').style.display = 'none';
             window.dispatchEvent(new CustomEvent('gameStart'));
         }

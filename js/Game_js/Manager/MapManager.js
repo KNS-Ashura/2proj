@@ -36,8 +36,8 @@ export default class MapManager {
 
     generateMap(config = {}) {
         const finalConfig = { ...(window.gameConfig || {}), ...config };
-        const playerCount = finalConfig.playerCount || 8;
-        const spawnMode = finalConfig.spawnMode || 'circle';
+        const totalCamps = finalConfig.campCount || 12;
+        const playerCount = finalConfig.playerCount || 2;
 
         const levelData = this.scene.cache.json.get("level1"); 
         if (!levelData || !levelData.tiles) return;
@@ -53,69 +53,28 @@ export default class MapManager {
             });
         });
 
-        let campPositions = [];
-        
-        if (spawnMode === 'sides') {
-            // Mode Défini : 2 par côté (Haut, Bas, Gauche, Droite)
-            const margin = 0.2; // 20% des bords
-            const zones = {
-                top: groundPositions.filter(p => p.y < mapHeight * margin),
-                bottom: groundPositions.filter(p => p.y > mapHeight * (1 - margin)),
-                left: groundPositions.filter(p => p.x < mapWidth * margin),
-                right: groundPositions.filter(p => p.x > mapWidth * (1 - margin))
-            };
+        const campPositions = [];
+        const minDistance = 6;
+        const shuffledGround = [...groundPositions].sort(() => Math.random() - 0.5);
 
-            for (const key in zones) {
-                zones[key].sort(() => Math.random() - 0.5);
-            }
-
-            const sequence = ['top', 'bottom', 'left', 'right'];
-            for (let i = 0; i < playerCount; i++) {
-                const zoneKey = sequence[i % 4];
-                const zoneList = zones[zoneKey];
-                
-                // On cherche une position dans la zone qui est assez loin des autres camps déjà placés
-                let found = false;
-                for (let j = 0; j < zoneList.length; j++) {
-                    const candidate = zoneList[j];
-                    const tooClose = campPositions.some(cp => Math.hypot(cp.x - candidate.x, cp.y - candidate.y) < 6);
-                    if (!tooClose) {
-                        campPositions.push(zoneList.splice(j, 1)[0]);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found && zoneList.length > 0) campPositions.push(zoneList.pop());
-            }
-        } else {
-            // Mode Cercle : Aléatoire sur le cercle
-            const centerX = mapWidth / 2;
-            const centerY = mapHeight / 2;
-            const radius = Math.min(mapWidth, mapHeight) * 0.35;
-            const angleStep = (Math.PI * 2) / playerCount;
-            const startAngle = Math.random() * Math.PI * 2; 
-
-            for (let i = 0; i < playerCount; i++) {
-                const angle = startAngle + (i * angleStep);
-                const targetX = Math.floor(centerX + Math.cos(angle) * radius);
-                const targetY = Math.floor(centerY + Math.sin(angle) * radius);
-                
-                let nearest = null;
-                let minDist = Infinity;
-                for (const pos of groundPositions) {
-                    const d = (pos.x - targetX) ** 2 + (pos.y - targetY) ** 2;
-                    if (d < minDist) {
-                        minDist = d;
-                        nearest = pos;
-                    }
-                }
-                if (nearest) campPositions.push(nearest);
-            }
+        for (const pos of shuffledGround) {
+            if (campPositions.length >= totalCamps) break;
+            const tooClose = campPositions.some(cp => Math.hypot(cp.x - pos.x, cp.y - pos.y) < minDistance);
+            if (!tooClose) campPositions.push(pos);
         }
 
         const campKeys = new Set(campPositions.map(p => `${p.x},${p.y}`));
         const campOwnerMap = {};
-        campPositions.forEach((pos, index) => campOwnerMap[`${pos.x},${pos.y}`] = index);
+        
+        const shuffledCamps = [...campPositions].sort(() => Math.random() - 0.5);
+        const campsPerPlayer = Math.max(1, Math.floor(totalCamps / (playerCount + 1)));
+
+        shuffledCamps.forEach((pos, index) => {
+            const key = `${pos.x},${pos.y}`;
+            const owner = Math.floor(index / campsPerPlayer);
+            if (owner < playerCount) campOwnerMap[key] = owner;
+            else campOwnerMap[key] = -1;
+        });
 
         tiles.forEach((row, y) => {
             row.forEach((tileType, x) => {
@@ -143,8 +102,10 @@ export default class MapManager {
                     camp.setOrigin(0.5, 0.8);
                     camp.setDepth(isoY + 1);
                     const ownerIndex = campOwnerMap[`${x},${y}`];
-                    if (ownerIndex !== undefined) {
+                    if (ownerIndex !== undefined && ownerIndex !== -1) {
                         camp.setTint(this.playerColors[ownerIndex % this.playerColors.length]);
+                    } else {
+                        camp.setTint(0x808080);
                     }
                     this.mapGroup.add(camp);
                     this.obstacles.push(camp);
