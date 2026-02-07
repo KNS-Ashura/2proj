@@ -6,6 +6,7 @@ import Unit from "../Logic/Unit.js";
 import UnitsManager from "./UnitsManager.js";
 import HUDScene from "./HudScene.js";
 import EconomyManager from "./EconomyManager.js";
+import VictoryConditions from "./VictoryConditions.js";
 
 export default class MainSceneManager extends Phaser.Scene {
     constructor() {
@@ -38,6 +39,7 @@ export default class MainSceneManager extends Phaser.Scene {
         this.economyManager = new EconomyManager(this);
         this.cameraManager = new CameraManager(this);
         this.movesManager = new MovesManager(this);
+        this.victoryConditions = new VictoryConditions(this);
         this.MapManager.generateMap();
         if (this.MapManager.camps) {
             this.movesManager.registerCamps(this.MapManager.camps);
@@ -53,6 +55,9 @@ export default class MainSceneManager extends Phaser.Scene {
         if (this.movesManager) {
             this.movesManager.update();
         }
+        if (this.victoryConditions) {
+            this.victoryConditions.update();
+        }
     }
 
     tryBuyUnit(price, unitIndex, camp) {
@@ -61,6 +66,7 @@ export default class MainSceneManager extends Phaser.Scene {
             const spawnX = camp.x;
             const spawnY = camp.y + 60; 
             const sprite = this.UnitsManager.spawnAt(spawnX, spawnY, unitData);
+            sprite.owner = 0; // L'unite appartient au joueur
             this.physics.add.existing(sprite);
             this.movesManager.registerUnit(sprite);
             this.registry.events.emit('closeRecruitment');
