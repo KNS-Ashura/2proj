@@ -1,36 +1,359 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2Proj - Configuration</title>
-    <link rel="stylesheet" href="./css/Web_style/Main_style.css">
+    <title>Sup-Kon-Quest</title>
+    <link rel="stylesheet" href="css/Web_style/Main_style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="menu-container" id="menu">
-        <h1>Paramètres de la Partie</h1>
-        <div class="form-group">
-            <label for="playerCount">Nombre de joueurs </label>
-            <input type="number" id="playerCount" min="2" max="8" value="4">
+    <div id="menu-container">
+        <!-- Header avec son, effet sonore, inscription, connexion -->
+        <div class="top-bar">
+            <!-- connexion/inscription en haut a gauche -->
+            <div class="auth-buttons" id="auth-buttons">
+                <div class="auth-btn-wrap">
+                    <button id="login-btn" class="hud-btn hud-btn-auth">
+                        <img src="assets/HUD/ButtonsText/ButtonText_Small_Blue_Round.png" alt="" class="btn-bg">
+                        <span>Connexion</span>
+                    </button>
+                    <!-- Bulle Connexion -->
+                    <div class="bubble bubble-login hidden" id="login-bubble">
+                        <div class="bubble-arrow"></div>
+                        <div class="bubble-content">
+                            <img src="assets/HUD/BoxesBanners/Box_Blue_Rounded.png" alt="" class="bubble-bg">
+                            <div class="bubble-inner">
+                                <h3 class="bubble-title">Connexion</h3>
+                                <form id="login-form" class="modal-form" novalidate>
+                                    <div class="form-group">
+                                        <label class="form-label">Email ou Pseudo</label>
+                                        <div class="hud-input-wrap">
+                                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_TextInput.png" alt=""
+                                                class="input-bg">
+                                            <input type="text" id="login-identifier" class="hud-input"
+                                                placeholder="Email ou pseudo" required>
+                                        </div>
+                                        <span class="form-error hidden" id="login-identifier-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Mot de passe</label>
+                                        <div class="hud-input-wrap">
+                                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_TextInput.png" alt=""
+                                                class="input-bg">
+                                            <input type="password" id="login-password" class="hud-input"
+                                                placeholder="Mot de passe" required>
+                                        </div>
+                                        <span class="form-error hidden" id="login-password-error"></span>
+                                    </div>
+                                    <span class="form-error form-error-global hidden" id="login-global-error"></span>
+                                    <button type="submit" class="hud-btn hud-btn-submit">
+                                        <img src="assets/HUD/ButtonsText/ButtonText_Large_Green_Round.png" alt=""
+                                            class="btn-bg">
+                                        <span>Se connecter</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-btn-wrap">
+                    <button id="register-btn" class="hud-btn hud-btn-auth">
+                        <img src="assets/HUD/ButtonsText/ButtonText_Small_Green_Round.png" alt="" class="btn-bg">
+                        <span>Inscription</span>
+                    </button>
+                    <!-- Bulle Inscription -->
+                    <div class="bubble bubble-register hidden" id="register-bubble">
+                        <div class="bubble-arrow"></div>
+                        <div class="bubble-content">
+                            <img src="assets/HUD/BoxesBanners/Box_Blue_Rounded.png" alt="" class="bubble-bg">
+                            <div class="bubble-inner">
+                                <h3 class="bubble-title">Inscription</h3>
+                                <form id="register-form" class="modal-form" novalidate>
+                                    <div class="form-group">
+                                        <label class="form-label">Pseudo</label>
+                                        <div class="hud-input-wrap">
+                                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_TextInput.png" alt=""
+                                                class="input-bg">
+                                            <input type="text" id="register-username" class="hud-input"
+                                                placeholder="Pseudo (3-20 caract.)" required>
+                                        </div>
+                                        <span class="form-error hidden" id="register-username-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <div class="hud-input-wrap">
+                                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_TextInput.png" alt=""
+                                                class="input-bg">
+                                            <input type="email" id="register-email" class="hud-input"
+                                                placeholder="exemple@email.com" required>
+                                        </div>
+                                        <span class="form-error hidden" id="register-email-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Mot de passe</label>
+                                        <div class="hud-input-wrap">
+                                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_TextInput.png" alt=""
+                                                class="input-bg">
+                                            <input type="password" id="register-password" class="hud-input"
+                                                placeholder="Min. 6 caract." required>
+                                        </div>
+                                        <span class="form-error hidden" id="register-password-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Confirmer le mot de passe</label>
+                                        <div class="hud-input-wrap">
+                                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_TextInput.png" alt=""
+                                                class="input-bg">
+                                            <input type="password" id="register-confirm" class="hud-input"
+                                                placeholder="Retapez le mot de passe" required>
+                                        </div>
+                                        <span class="form-error hidden" id="register-confirm-error"></span>
+                                    </div>
+                                    <span class="form-error form-error-global hidden" id="register-global-error"></span>
+                                    <button type="submit" class="hud-btn hud-btn-submit">
+                                        <img src="assets/HUD/ButtonsText/ButtonText_Large_Green_Round.png" alt=""
+                                            class="btn-bg">
+                                        <span>S'inscrire</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sound buttons (right side of top bar) -->
+            <div class="sound-buttons">
+                <button class="icon-btn" id="audio-btn" title="Effets sonores">
+                    <img src="assets/HUD/Icons/Icon_Large_Audio_Blank.png" alt="Audio">
+                </button>
+                <button class="icon-btn" id="music-btn" title="Musique">
+                    <img src="assets/HUD/Icons/Icon_Large_Music_Blank.png" alt="Musique">
+                </button>
+            </div>
+            <!-- Connecté (cacher par defaut) -->
+            <!--il faudra penser a appele ca au moment de la connexion pour que le bouton soit visible-->
+            <div class="auth-profile hidden" id="auth-profile">
+                <button id="profile-btn" class="hud-btn hud-btn-auth">
+                    <img src="assets/HUD/ButtonsText/ButtonText_Small_Blue_Round.png" alt="" class="btn-bg">
+                    <span>Mon Profil</span>
+                </button>
+            </div>
         </div>
-        <div class="form-group">
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                <input type="checkbox" id="spawnDefined" style="width: auto;">
-                <span>Spawn random</span>
-            </label>
+
+        <div class="menu-content">
+            <!-- Banniere de base -->
+            <!--Methode moderne pour incurvé du texte-->
+            <div class="title-banner">
+                <img src="assets/HUD/BoxesBanners/Banner_Blue.png" alt="" class="banner-bg">
+                <svg class="title-svg" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <path id="bannerArc" d="M 60,95 Q 250,40 440,95" fill="none" />
+                    </defs>
+                    <text text-anchor="middle">
+                        <textPath href="#bannerArc" startOffset="50%">Power Quest</textPath>
+                    </text>
+                </svg>
+            </div>
+
+            <!-- Bouton Jouer -->
+            <button id="play-btn" class="hud-btn hud-btn-play">
+                <img src="assets/HUD/ButtonsText/ButtonText_Large_Green_Round.png" alt="" class="btn-bg">
+                <span>JOUER</span>
+            </button>
+
+            <!-- Bouton Regles -->
+            <nav class="nav-group">
+                <button id="rules-btn" class="hud-btn hud-btn-nav">
+                    <img src="assets/HUD/ButtonsText/ButtonText_Large_Orange_Round.png" alt="" class="btn-bg">
+                    <span>Regles</span>
+                </button>
+            </nav>
+
+            <!-- Bouton Options -->
+            <button id="options-btn" class="hud-btn hud-btn-nav">
+                <img src="assets/HUD/ButtonsText/ButtonText_Large_Orange_Round.png" alt="" class="btn-bg">
+                <span>Options</span>
+            </button>
         </div>
-        <button onclick="startGame()">JOUER</button>
+
+        <!-- Section options -->
+        <div class="options-overlay hidden" id="options-overlay">
+            <div class="options-panel">
+                <img src="assets/HUD/BoxesBanners/Box_Blue_Rounded.png" alt="" class="options-panel-bg">
+
+                <div class="options-inner">
+                    <!-- Options titre -->
+                    <div class="options-title-banner">
+                        <img src="assets/HUD/BoxesBanners/Banner_Blue.png" alt="" class="banner-bg">
+                        <svg class="title-svg" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <path id="optionsArc" d="M 60,95 Q 250,40 440,95" fill="none" />
+                            </defs>
+                            <text text-anchor="middle">
+                                <textPath href="#optionsArc" startOffset="50%">Options</textPath>
+                            </text>
+                        </svg>
+                    </div>
+
+                    <!-- Volume SFX -->
+                    <div class="option-row">
+                        <label class="option-label">Volume Effets Sonores</label>
+                        <div class="slider-container">
+                            <input type="range" id="sfx-volume" min="0" max="100" value="75" class="hud-slider">
+                            <span class="slider-value" id="sfx-value">75%</span>
+                        </div>
+                    </div>
+
+                    <!-- Language -->
+                    <div class="option-row">
+                        <label class="option-label">Langue</label>
+                        <div class="lang-buttons">
+                            <button class="hud-btn hud-btn-lang active" data-lang="fr">
+                                <img src="assets/HUD/ButtonsText/ButtonText_Small_Blue_Round.png" alt="" class="btn-bg">
+                                <span>FR</span>
+                            </button>
+                            <button class="hud-btn hud-btn-lang" data-lang="en">
+                                <img src="assets/HUD/ButtonsText/ButtonText_Small_Blue_Round.png" alt="" class="btn-bg">
+                                <span>EN</span>
+                            </button>
+                            <button class="hud-btn hud-btn-lang" data-lang="es">
+                                <img src="assets/HUD/ButtonsText/ButtonText_Small_Blue_Round.png" alt="" class="btn-bg">
+                                <span>ES</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FPS  -->
+                    <div class="option-row">
+                        <label class="option-label">Afficher les FPS</label>
+                        <div class="toggle-container" id="fps-toggle">
+                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_OnOffBackground.png" alt=""
+                                class="toggle-bg">
+                            <img src="assets/HUD/ButtonsText/ButtonText_Blue_OnOffButton.png" alt="" class="toggle-knob"
+                                id="fps-knob">
+                        </div>
+                    </div>
+
+                    <!-- Close button -->
+                    <button id="options-close" class="hud-btn hud-btn-close">
+                        <img src="assets/HUD/ButtonsText/PremadeButtons_ExitRed.png" alt="Fermer">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="menu-footer">
+            <span>&copy; 2026 Power Quest</span>
+            <span class="footer-sep">|</span>
+            <a href="#">CGU</a>
+            <span class="footer-sep">|</span>
+            <a href="#">Confidentialit&eacute;</a>
+            <span class="footer-sep">|</span>
+            <span>v1.0.0</span>
+        </footer>
     </div>
 
-    <script type="module" src="./js/Game_js/Main.js"></script>
+    <script type="module">
+        // ─── Play ───
+        const playBtn = document.getElementById('play-btn');
+        const menu = document.getElementById('menu-container');
+        
+        playBtn.addEventListener('click', () => {
+            menu.style.display = 'none';
+            
+            // Configuration par défaut pour compatibilité avec Main.js
+            window.gameConfig = { playerCount: 2 };
 
-    <script type="text/javascript">
-        function startGame() {
-            const playerCount = parseInt(document.getElementById('playerCount').value);
-            window.gameConfig = { playerCount };
-            document.getElementById('menu').style.display = 'none';
-            window.dispatchEvent(new CustomEvent('gameStart'));
-        }
+            import('./js/Game_js/Main.js').then(() => {
+                console.log("Jeu lancé !");
+                window.dispatchEvent(new CustomEvent('gameStart'));
+            }).catch(err => {
+                console.error("Erreur lors du lancement du jeu :", err);
+            });
+        });
+
+        // ─── Regles ───
+        document.getElementById('rules-btn').addEventListener('click', () => {
+            alert('Regles : Fonctionnalité à venir !');
+        });
+
+        // ─── Options panel ───
+        const optionsOverlay = document.getElementById('options-overlay');
+        document.getElementById('options-btn').addEventListener('click', () => {
+            optionsOverlay.classList.remove('hidden');
+        });
+        document.getElementById('options-close').addEventListener('click', () => {
+            optionsOverlay.classList.add('hidden');
+        });
+        optionsOverlay.addEventListener('click', (e) => {
+            if (e.target === optionsOverlay) optionsOverlay.classList.add('hidden');
+        });
+
+        // Volume SFX slider
+        const sfxSlider = document.getElementById('sfx-volume');
+        const sfxValue = document.getElementById('sfx-value');
+        sfxSlider.addEventListener('input', () => {
+            sfxValue.textContent = sfxSlider.value + '%';
+        });
+
+        // Language selection
+        const langBtns = document.querySelectorAll('.hud-btn-lang');
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                langBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // FPS toggle
+        const fpsToggle = document.getElementById('fps-toggle');
+        const fpsKnob = document.getElementById('fps-knob');
+        let fpsOn = false;
+        fpsToggle.addEventListener('click', () => {
+            fpsOn = !fpsOn;
+            fpsKnob.classList.toggle('toggle-on', fpsOn);
+        });
+
+
+        // ─── Audio / Music toggles ───
+        const audioBtn = document.getElementById('audio-btn');
+        const musicBtn = document.getElementById('music-btn');
+        let audioOn = true, musicOn = true;
+        audioBtn.addEventListener('click', () => {
+            audioOn = !audioOn;
+            audioBtn.querySelector('img').src = audioOn
+                ? 'assets/HUD/Icons/Icon_Large_Audio_Blank.png'
+                : 'assets/HUD/Icons/Icon_Large_AudioOff_Blank.png';
+        });
+        musicBtn.addEventListener('click', () => {
+            musicOn = !musicOn;
+            musicBtn.querySelector('img').src = musicOn
+                ? 'assets/HUD/Icons/Icon_Large_Music_Blank.png'
+                : 'assets/HUD/Icons/Icon_Large_MusicOff_Blank.png';
+        });
+
+        // ─── Auth (login.js & registry.js) ───
+        // Note: Commenté pour éviter les erreurs si les fichiers n'existent pas encore
+        /*
+        import { initLogin } from './js/Web_js/auth/login.js';
+        import { initRegister } from './js/Web_js/auth/registry.js';
+        initLogin();
+        initRegister();
+        */
+
+        document.getElementById('profile-btn').addEventListener('click', () => {
+            alert('Mon Profil : Fonctionnalité à venir !');
+        });
     </script>
 </body>
+
 </html>

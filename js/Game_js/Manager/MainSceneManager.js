@@ -1,8 +1,11 @@
 import Phaser from "phaser";
 import MapManager from "./MapManager.js";
 import CameraManager from "./CameraManager.js";
+import MovesManager from "./ManagerMoves.js"; 
 import Unit from "../Logic/Unit.js";
 import UnitsManager from "./UnitsManager.js";
+import HUDScene from "./HudScene.js";
+import EconomyManager from "./EconomyManager.js";
 
 export default class MainSceneManager extends Phaser.Scene {
     constructor() {
@@ -12,13 +15,8 @@ export default class MainSceneManager extends Phaser.Scene {
     }
 
     preload() {
-        // Map
-        
         this.MapManager = new MapManager(this);
         this.MapManager.registerAssets(this.load);
-
-        // Units
-
         const character0 = new Unit({
             name: "Character0",
             hp: 100,
@@ -27,38 +25,48 @@ export default class MainSceneManager extends Phaser.Scene {
             buildTime: 0,
             range: 1,
             price: 0,
-            frameWidth: 460,
-            frameHeight: 575
+            frameWidth: 460, 
+            frameHeight: 460
         });
-
-        this.units = [character0];
-
+        this.unitsList = [character0];
         this.UnitsManager = new UnitsManager(this);
-        this.UnitsManager.registerAssets(this.load, this.units);
-
-
-
+        this.UnitsManager.registerAssets(this.load, this.unitsList);
     }
-
-    
 
     create() {
-        // Managers
+        this.scene.add("HUDScene", HUDScene, true);
+        this.economyManager = new EconomyManager(this);
         this.cameraManager = new CameraManager(this);
-/*         this.UnitManager.createAnimations(); */
-
-        // Création map
-        this.MapManager.generateMap(window.playerCount || 2);
-        //this.CampManager.generateCamp(); PIERRE
-        
-        // Animations (optionnel ici, spawn peut le faire)
-        this.UnitsManager.createAnimations(this.units[0]);
-
-        // Spawn du joueur
-        this.playerSprite = this.UnitsManager.spawn(5 ,5 ,this.units[0]);
+        this.movesManager = new MovesManager(this);
+        this.MapManager.generateMap();
+        if (this.MapManager.camps) {
+            this.movesManager.registerCamps(this.MapManager.camps);
+        }
+        this.UnitsManager.createAllAnimations(this.unitsList);
+        const playerCamp = this.MapManager.camps.find(c => c.owner === 0);
+        if (playerCamp) {
+            this.cameraManager.camera.centerOn(playerCamp.x, playerCamp.y);
+        }
     }
 
-/*     update(time, delta) {
-        this.unitManager.update(time, delta);
-    } */
+    update() {
+        if (this.movesManager) {
+            this.movesManager.update();
+        }
+    }
+
+    tryBuyUnit(price, unitIndex, camp) {
+        if (camp && this.economyManager.spendGold(price)) {
+            const unitData = this.unitsList[unitIndex];
+            const spawnX = camp.x;
+            const spawnY = camp.y + 60; 
+            const sprite = this.UnitsManager.spawnAt(spawnX, spawnY, unitData);
+            this.physics.add.existing(sprite);
+            this.movesManager.registerUnit(sprite);
+            this.registry.events.emit('closeRecruitment');
+            this.scene.get('HUDScene').events.emit('closeRecruitment');
+        } else {
+            console.log("Pas assez d'or ou pas de camp sélectionné.");
+        }
+    }
 }

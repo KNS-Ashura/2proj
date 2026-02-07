@@ -1,10 +1,12 @@
+import { CampManager } from "./CampManager.js";
+
 export default class MapManager {
     constructor(scene) {
         this.scene = scene;
         this.mapGroup = this.scene.add.group();
         this.obstacles = [];
+        this.camps = [];
     
-
         this.TILE_WIDTH = 512;
         this.TILE_HEIGHT = 185;
 
@@ -17,11 +19,6 @@ export default class MapManager {
             2: "dirt",
             3: "camp_test"
         };
-
-        this.playerColors = [
-            0xff0000, 0x0000ff, 0x00ff00, 0xffff00,
-            0x800080, 0x00ffff, 0xffa500, 0xffc0cb
-        ];
     }
 
     registerAssets(load) {
@@ -87,8 +84,8 @@ export default class MapManager {
                     return;
                 }
 
-                const isoX = (x - y) * (this.TILE_WIDTH / 2);
-                const isoY = (x + y) * (this.TILE_HEIGHT / 2);
+                const isoX = (x - y) * (this.TILE_WIDTH / 2) + this.offsetX;
+                const isoY = (x + y) * (this.TILE_HEIGHT / 2) + this.offsetY;
 
                 const isCampPos = campKeys.has(`${x},${y}`);
 
@@ -98,17 +95,23 @@ export default class MapManager {
                 this.mapGroup.add(tile);
 
                 if (isCampPos) {
-                    const camp = this.scene.add.image(isoX, isoY, "camp");
+                    const ownerIndex = campOwnerMap[`${x},${y}`];
+                    const camp = new CampManager(this.scene, isoX, isoY, "camp", ownerIndex);
+                    this.scene.add.existing(camp);
+                    
                     camp.setOrigin(0.5, 0.8);
                     camp.setDepth(isoY + 1);
-                    const ownerIndex = campOwnerMap[`${x},${y}`];
-                    if (ownerIndex !== undefined && ownerIndex !== -1) {
-                        camp.setTint(this.playerColors[ownerIndex % this.playerColors.length]);
+                    
+                    if (ownerIndex === 0) {
+                        camp.setTint(0xff0000); 
+                    } else if (ownerIndex > 0) {
+                        camp.setTint(0x0000ff); 
                     } else {
-                        camp.setTint(0x808080);
+                        camp.setTint(0x808080); 
                     }
                     this.mapGroup.add(camp);
                     this.obstacles.push(camp);
+                    this.camps.push(camp);
                 } else if (tileType === 0 || tileType === 2) {
                     const clusterValue = Math.sin(x * 0.5) + Math.cos(y * 0.5);
                     

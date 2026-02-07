@@ -10,7 +10,6 @@ export default class CameraManager {
     }
 
     setupInput() {
-        // Zoom
         this.scene.input.on("wheel", (pointer, gameObjects, deltaX, deltaY) => {
             if (deltaY > 0) {
                 const newZoom = this.camera.zoom - 0.1;
@@ -20,10 +19,9 @@ export default class CameraManager {
                 if (newZoom < 2.5) this.camera.setZoom(newZoom);
             }
         });
-
-        // Drag
         this.scene.input.on("pointermove", pointer => {
             if (!pointer.isDown) return;
+            if (!pointer.middleButtonDown()) return;
             this.camera.scrollX -= (pointer.x - pointer.prevPosition.x) / this.camera.zoom;
             this.camera.scrollY -= (pointer.y - pointer.prevPosition.y) / this.camera.zoom;
         });
