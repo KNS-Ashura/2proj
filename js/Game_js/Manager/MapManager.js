@@ -112,6 +112,7 @@ export default class MapManager {
                     this.mapGroup.add(camp);
                     this.obstacles.push(camp);
                     this.camps.push(camp);
+
                 } else if (tileType === 0 || tileType === 2) {
                     const clusterValue = Math.sin(x * 0.5) + Math.cos(y * 0.5);
                     

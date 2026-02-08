@@ -47,9 +47,13 @@ export default class MovesManager {
             if (pointer.leftButtonDown()) {
                 this.isSelecting = true;
                 this.startPoint.set(pointer.worldX, pointer.worldY);
-                const clickedUnit = this.registeredUnits.find(unit => 
-                    unit.getBounds().contains(pointer.worldX, pointer.worldY)
-                );
+                
+                // Utilisation de unit.body pour la détection du clic
+                const clickedUnit = this.registeredUnits.find(unit => {
+                    const b = unit.body || unit.getBounds();
+                    return pointer.worldX >= b.x && pointer.worldX <= b.x + b.width &&
+                           pointer.worldY >= b.y && pointer.worldY <= b.y + b.height;
+                });
 
                 if (clickedUnit) {
                     this.handleUnitSelection(clickedUnit);
@@ -112,14 +116,13 @@ export default class MovesManager {
     selectUnit(unit) {
         if (unit.isSelected) return;
         unit.isSelected = true;
-        unit.setTint(0xff0000); 
+        const role = unit.unit.role;
         if (unit.selectionCircle) unit.selectionCircle.setVisible(true);
         this.selectedUnits.push(unit);
     }
 
     deselectUnit(unit) {
         unit.isSelected = false;
-        unit.clearTint();
         if (unit.selectionCircle) unit.selectionCircle.setVisible(false);
         this.selectedUnits = this.selectedUnits.filter(u => u !== unit);
     }
@@ -127,7 +130,6 @@ export default class MovesManager {
     deselectAll() {
         this.selectedUnits.forEach(u => {
             u.isSelected = false;
-            u.clearTint();
             if (u.selectionCircle) u.selectionCircle.setVisible(false);
         });
         this.selectedUnits = [];
@@ -153,7 +155,8 @@ export default class MovesManager {
 
         if (!this.shiftKey.isDown) this.deselectAll();
         this.registeredUnits.forEach(unit => {
-            if (Phaser.Geom.Intersects.RectangleToRectangle(selectionRect, unit.getBounds())) {
+            const bounds = unit.body || unit.getBounds();
+            if (Phaser.Geom.Intersects.RectangleToRectangle(selectionRect, bounds)) {
                 this.selectUnit(unit);
             }
         });
@@ -226,7 +229,7 @@ export default class MovesManager {
         this.debugGraphics.lineStyle(1, 0x0000ff, 0.5);
         this.registeredUnits.forEach(unit => {
             if (unit.selectionCircle) unit.selectionCircle.setPosition(unit.x, unit.y);
-            const bounds = unit.getBounds();
+            const bounds = unit.body || unit.getBounds();
             this.debugGraphics.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
             if (unit.targetPos && unit.body) {
                 const dist = Phaser.Math.Distance.Between(unit.x, unit.y, unit.targetPos.x, unit.targetPos.y);

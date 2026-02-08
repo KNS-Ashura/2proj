@@ -40,8 +40,8 @@ export default class HUDScene extends Phaser.Scene {
 
         const units = [
             { name: "Infantry", price: 50, index: 0 },
-            { name: "Range", price: 100, index: 0 }, 
-            { name: "Heavy", price: 150, index: 0 }
+            { name: "Range", price: 100, index: 1 },
+            { name: "Heavy", price: 150, index: 2 }
         ];
 
         units.forEach((unit, i) => {

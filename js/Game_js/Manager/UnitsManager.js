@@ -9,7 +9,11 @@ export default class UnitsManager {
     }
 
     registerAssets(load, unitsList) {
+        const loadedNames = new Set();
         unitsList.forEach(unit => {
+            if (loadedNames.has(unit.name)) return; 
+            loadedNames.add(unit.name);
+
             load.spritesheet(
                 `${unit.name}_Idle.png`,
                 `assets/Game_assets/units/${unit.name}_Idle.png`,
@@ -89,7 +93,7 @@ export default class UnitsManager {
         const isoY =
             (tileX + tileY) * (map.TILE_HEIGHT / 2) + map.offsetY;
         const sprite = this.scene.add.sprite(isoX, isoY, `${unit.name}_Idle.png`);
-        sprite.setOrigin(1, 0.9);
+        sprite.setOrigin(0.5, 0.88);
         sprite.setDepth(10000);
         sprite.play(`${unit.name}_Idle_F_S`);
         sprite.unit = unit;
@@ -101,7 +105,7 @@ export default class UnitsManager {
 
     spawnAt(x, y, unit) {
         const sprite = this.scene.add.sprite(x, y, `${unit.name}_Idle.png`);
-        sprite.setOrigin(1, 0.9);
+        sprite.setOrigin(0.5, 0.88);
         sprite.setDepth(100000); 
         sprite.play(`${unit.name}_Idle_F`); 
         sprite.unit = unit;
