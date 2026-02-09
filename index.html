@@ -185,6 +185,42 @@
             </button>
         </div>
 
+        <!-- Section mode de jeu -->
+        <div class="play-overlay hidden" id="play-overlay">
+            <div class="play-panel">
+                <img src="assets/HUD/BoxesBanners/Box_Blue_Rounded.png" alt="" class="options-panel-bg">
+                <div class="play-inner">
+                    <div class="options-title-banner">
+                        <img src="assets/HUD/BoxesBanners/Banner_Blue.png" alt="" class="banner-bg">
+                        <svg class="title-svg" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <path id="playArc" d="M 60,95 Q 250,40 440,95" fill="none" />
+                            </defs>
+                            <text text-anchor="middle">
+                                <textPath href="#playArc" startOffset="50%">Modes de jeu</textPath>
+                            </text>
+                        </svg>
+                    </div>
+                    <button id="create-game-btn" class="hud-btn hud-btn-play-option">
+                        <img src="assets/HUD/ButtonsText/ButtonText_Large_Green_Round.png" alt="" class="btn-bg">
+                        <span>Créer une partie</span>
+                    </button>
+                    <button id="join-game-btn" class="hud-btn hud-btn-play-option">
+                        <img src="assets/HUD/ButtonsText/ButtonText_Large_Blue_Round.png" alt="" class="btn-bg">
+                        <span>Rejoindre une partie</span>
+                    </button>
+                    <button id="solo-game-btn" class="hud-btn hud-btn-play-option">
+                        <img src="assets/HUD/ButtonsText/ButtonText_Large_Orange_Round.png" alt="" class="btn-bg">
+                        <span>Jouer en solo</span>
+                    </button>
+                    <button id="play-close" class="hud-btn hud-btn-close">
+                        <img src="assets/HUD/ButtonsText/PremadeButtons_ExitRed.png" alt="" class="btn-bg">
+                        <span>Retour</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Section options -->
         <div class="options-overlay hidden" id="options-overlay">
             <div class="options-panel">
@@ -254,31 +290,50 @@
         <footer class="menu-footer">
             <span>&copy; 2026 Power Quest</span>
             <span class="footer-sep">|</span>
-            <a href="#">CGU</a>
+            <a href="cgu.html">CGU</a>
             <span class="footer-sep">|</span>
-            <a href="#">Confidentialit&eacute;</a>
+            <a href="conf.html">Confidentialit&eacute;</a>
             <span class="footer-sep">|</span>
             <span>v1.0.0</span>
         </footer>
     </div>
 
     <script type="module">
-        // ─── Play ───
+        // ─── Play overlay ───
         const playBtn = document.getElementById('play-btn');
         const menu = document.getElementById('menu-container');
-        
-        playBtn.addEventListener('click', () => {
-            menu.style.display = 'none';
-            
-            // Configuration par défaut pour compatibilité avec Main.js
-            window.gameConfig = { playerCount: 2 };
+        const playOverlay = document.getElementById('play-overlay');
 
+        playBtn.addEventListener('click', () => {
+            playOverlay.classList.remove('hidden');
+        });
+        document.getElementById('play-close').addEventListener('click', () => {
+            playOverlay.classList.add('hidden');
+        });
+        playOverlay.addEventListener('click', (e) => {
+            if (e.target === playOverlay) playOverlay.classList.add('hidden');
+        });
+
+        function launchGame() {
+            playOverlay.classList.add('hidden');
+            menu.style.display = 'none';
+            window.gameConfig = { playerCount: 2 };
             import('./js/Game_js/Main.js').then(() => {
                 console.log("Jeu lancé !");
                 window.dispatchEvent(new CustomEvent('gameStart'));
             }).catch(err => {
                 console.error("Erreur lors du lancement du jeu :", err);
             });
+        }
+
+        document.getElementById('create-game-btn').addEventListener('click', () => {
+            alert('Créer une partie : Fonctionnalité à venir !');
+        });
+        document.getElementById('join-game-btn').addEventListener('click', () => {
+            alert('Rejoindre une partie : Fonctionnalité à venir !');
+        });
+        document.getElementById('solo-game-btn').addEventListener('click', () => {
+            launchGame();
         });
 
         // ─── Regles ───
@@ -342,13 +397,11 @@
         });
 
         // ─── Auth (login.js & registry.js) ───
-        // Note: Commenté pour éviter les erreurs si les fichiers n'existent pas encore
-        /*
-        import { initLogin } from './js/Web_js/auth/login.js';
-        import { initRegister } from './js/Web_js/auth/registry.js';
+        import { initLogin, restoreSession } from './js/Web_js/login.js';
+        import { initRegister } from './js/Web_js/registry.js';
         initLogin();
         initRegister();
-        */
+        restoreSession();
 
         document.getElementById('profile-btn').addEventListener('click', () => {
             alert('Mon Profil : Fonctionnalité à venir !');
