@@ -160,6 +160,7 @@ export default class MainSceneManager extends Phaser.Scene {
         sprite.maxHp = unitData.hp;
         sprite.healthBar = this.add.graphics();
         sprite.healthBar.setDepth(100001);
+        sprite.owner = camp.owner;
         this.activeUnits.push(sprite);
         if (unitData.role === "Heavy") {
             sprite.setTint(0x555555); 
@@ -193,7 +194,7 @@ export default class MainSceneManager extends Phaser.Scene {
             let target = null;
             let minDist = zoneRadius;
             this.MapManager.camps.forEach(camp => {
-                if (camp.owner !== 0 && camp.active) { 
+                if (camp.owner !== unit.owner && camp.active) { 
                     const dist = Phaser.Math.Distance.Between(unit.x, unit.y, camp.x, camp.y);
                     if (dist < minDist) {
                         minDist = dist;
@@ -220,7 +221,7 @@ export default class MainSceneManager extends Phaser.Scene {
             onComplete: () => {
                 bullet.destroy();
                 if (target.takeDamage) {
-                    target.takeDamage(10);
+                    target.takeDamage(10, unit.owner);
                 }
             }
         });

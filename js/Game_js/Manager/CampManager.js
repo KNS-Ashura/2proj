@@ -6,6 +6,7 @@ export class CampManager extends Phaser.GameObjects.Sprite {
         this.owner = owner;
         this.hp = 1000;
         this.maxHp = 1000;
+        this.damage = 50;
         
         this.setInteractive(); 
         this.setDepth(y);      
@@ -15,13 +16,11 @@ export class CampManager extends Phaser.GameObjects.Sprite {
         this.updateHealthBar();
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, attackerOwner) {
         this.hp -= amount;
+
         if (this.hp <= 0) {
-            this.hp = 0;
-            this.setActive(false);
-            this.setVisible(false); 
-            this.healthBar.destroy();
+            this.capture(attackerOwner);
         } else {
             this.updateHealthBar();
         }
@@ -41,5 +40,21 @@ export class CampManager extends Phaser.GameObjects.Sprite {
         const hpPercent = Phaser.Math.Clamp(this.hp / this.maxHp, 0, 1);
         this.healthBar.fillStyle(0xff0000); 
         this.healthBar.fillRect(x, y, width * hpPercent, height);
+    }
+
+        capture(newOwner) {
+        this.owner = newOwner;
+        this.hp = this.maxHp;
+
+        // Couleurs par joueur
+        const playerColors = {
+            0: 0xff0000, // rouge
+            1: 0x0000ff, // bleu
+            2: 0x00ff00  // vert (si futur joueur)
+        };
+
+        this.setTint(playerColors[newOwner] || 0x808080);
+
+        this.updateHealthBar();
     }
 }
