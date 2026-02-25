@@ -1,8 +1,7 @@
-import MapManager from "./MapManager";
-
 export default class UnitsManager {
-    constructor(scene) {
+    constructor(scene,anim) {
         this.scene = scene;
+        this.anim = anim
         this.registeredUnits = new Set();
         this.offsetX = 800;
         this.offsetY = 200;
