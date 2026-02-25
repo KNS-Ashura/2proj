@@ -31,6 +31,10 @@ export default class MovesManager {
         console.log("Unité enregistrée :", sprite); 
     }
 
+    unregisterUnit(unit) {
+    this.units = this.units.filter(u => u !== unit);
+    }
+
     registerCamps(campsList) {
         this.camps = campsList;
     }
@@ -229,6 +233,7 @@ export default class MovesManager {
         unit.lastDirection = direction;
         unit.play(`${unit.unit.name}_Run_${direction}`, true);
     }
+
 
     update() {
         this.debugGraphics.clear();
