@@ -88,6 +88,7 @@ export default class MainSceneManager extends Phaser.Scene {
         }
         this.updateHealthBars();
         this.handleCombat();
+        this.handleCampCombat();
     }
 
     updateHealthBars() {
@@ -206,6 +207,70 @@ export default class MainSceneManager extends Phaser.Scene {
             if (target) {
                 this.fireProjectile(unit, target);
                 unit.lastAttackTime = time;
+            }
+        });
+    }
+
+    handleCampCombat() {
+        const time = this.time.now;
+
+        this.MapManager.camps.forEach(camp => {
+            if (!camp.active) return;
+
+            if (time < camp.lastAttackTime + (camp.attackSpeed * 1000)) {
+                return;
+            }
+
+            let target = null;
+            let minDist = camp.attackRange;
+
+            this.activeUnits.forEach(unit => {
+                if (!unit.active) return;
+                if (unit.owner === camp.owner) return;
+
+                const dist = Phaser.Math.Distance.Between(
+                    camp.x, camp.y,
+                    unit.x, unit.y
+                );
+
+                if (dist < minDist) {
+                    minDist = dist;
+                    target = unit;
+                }
+            });
+
+            if (target) {
+                this.fireCampProjectile(camp, target);
+                camp.lastAttackTime = time;
+            }
+        });
+    }
+
+        fireCampProjectile(camp, target) {
+        const bullet = this.add.circle(camp.x, camp.y - 50, 10, 0xffaa00);
+        bullet.setDepth(100002);
+
+        this.tweens.add({
+            targets: bullet,
+            x: target.x,
+            y: target.y,
+            duration: 400,
+            onComplete: () => {
+                bullet.destroy();
+
+                if (target.active) {
+                    target.hp -= camp.attackDamage;
+                    if (target.hp <= 0) {
+                        target.setActive(false);
+                        target.setVisible(false);
+
+                        if (this.movesManager) {
+                            this.movesManager.unregisterUnit(target);
+                        }
+
+                        target.destroy();
+                    }
+                }
             }
         });
     }

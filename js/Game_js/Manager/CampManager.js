@@ -6,7 +6,10 @@ export class CampManager extends Phaser.GameObjects.Sprite {
         this.owner = owner;
         this.hp = 1000;
         this.maxHp = 1000;
-        this.damage = 50;
+        this.attackRange = 600;      // distance d'attaque
+        this.attackDamage = 20;      // dégâts
+        this.attackSpeed = 1.5;      // secondes entre attaques
+        this.lastAttackTime = 0;
         
         this.setInteractive(); 
         this.setDepth(y);      

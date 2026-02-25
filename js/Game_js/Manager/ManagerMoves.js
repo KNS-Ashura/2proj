@@ -185,9 +185,15 @@ export default class MovesManager {
     updateAnimation(unit) {
         const SPRITE_FACES_LEFT = false; 
 
-        if (!unit.body || unit.body.speed < 10) {
-            const direction = unit.lastDirection || 'F'; 
-            unit.play(`${unit.unit.name}_Idle_${direction}`, true);
+        if (!unit || !unit.active || !unit.body) return;
+
+        if (unit.body.speed < 10) {
+            const direction = unit.lastDirection || 'F';
+
+            if (unit.anims) {
+                unit.play(`${unit.unit.name}_Idle_${direction}`, true);
+            }
+
             return;
         }
 
