@@ -14,7 +14,7 @@ export default class MovesManager {
         this.debugGraphics = this.scene.add.graphics().setDepth(2000000);
         this.scene.input.mouse.disableContextMenu();
         this.shiftKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-        
+        this.units = [];
         this.setupInput();
     }
 
@@ -32,7 +32,7 @@ export default class MovesManager {
     }
 
     unregisterUnit(unit) {
-    this.units = this.units.filter(u => u !== unit);
+        this.units = this.units.filter(u => u !== unit);
     }
 
     registerCamps(campsList) {

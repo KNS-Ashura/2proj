@@ -12,6 +12,8 @@ export default class MainSceneManager extends Phaser.Scene {
         super({ key: "MainScene" });
         this.offsetX = 800;
         this.offsetY = 200;
+
+        this.units = [];
     }
 
     preload() {
@@ -291,4 +293,6 @@ export default class MainSceneManager extends Phaser.Scene {
             }
         });
     }
+
+
 }
