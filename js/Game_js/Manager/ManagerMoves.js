@@ -163,7 +163,7 @@ export default class MovesManager {
     }
 
     handleMoveCommand(pointer) {
-        const spacing = 50;
+        const spacing = 70;
         const cols = Math.ceil(Math.sqrt(this.selectedUnits.length));
         this.selectedUnits.forEach((unit, i) => {
             const col = i % cols;

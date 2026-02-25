@@ -67,6 +67,20 @@ export default class MainSceneManager extends Phaser.Scene {
 
     create() {
         this.activeUnits = [];
+        this.unitsGroup = this.physics.add.group();
+        this.physics.add.collider(this.unitsGroup, this.unitsGroup);
+        this.physics.world.setBounds(-24800,0, 51200, 18700);
+
+        // --- Débogage : Afficher les limites du monde physique ---
+        const debugGraphics = this.add.graphics().setDepth(999999);
+        debugGraphics.lineStyle(10, 0xff0000, 0.5); 
+        debugGraphics.strokeRect(
+            this.physics.world.bounds.x,
+            this.physics.world.bounds.y,
+            this.physics.world.bounds.width,
+            this.physics.world.bounds.height
+        );
+
         this.scene.add("HUDScene", HUDScene, true);
         this.economyManager = new EconomyManager(this);
         this.cameraManager = new CameraManager(this);
@@ -169,9 +183,10 @@ export default class MainSceneManager extends Phaser.Scene {
             sprite.setTint(0xff0000);
         }
 
-        this.physics.add.existing(sprite);
+        this.unitsGroup.add(sprite);
         sprite.body.setSize(180, 340);
         sprite.body.setOffset(140, 90);
+        sprite.body.setCollideWorldBounds(true);
 
         this.movesManager.registerUnit(sprite);
         
