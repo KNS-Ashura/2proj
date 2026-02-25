@@ -24,7 +24,7 @@ export default class MainSceneManager extends Phaser.Scene {
             hp: 100,
             walkSpeed: 120,
             hitSpeed: 1,
-            buildTime: 0,
+            buildTime: 5000, 
             range: 1,
             price: 50,
             frameWidth: 460, 
@@ -38,7 +38,7 @@ export default class MainSceneManager extends Phaser.Scene {
             hp: 80,
             walkSpeed: 120,
             hitSpeed: 1,
-            buildTime: 0,
+            buildTime: 7000, 
             range: 3,
             price: 100,
             frameWidth: 460, 
@@ -52,7 +52,7 @@ export default class MainSceneManager extends Phaser.Scene {
             hp: 150,
             walkSpeed: 100,
             hitSpeed: 1,
-            buildTime: 0,
+            buildTime: 10000, 
             range: 1,
             price: 150,
             frameWidth: 460, 
@@ -88,6 +88,7 @@ export default class MainSceneManager extends Phaser.Scene {
         }
         this.updateHealthBars();
         this.handleCombat();
+        this.handleCampProduction();
     }
 
     updateHealthBars() {
@@ -123,6 +124,10 @@ export default class MainSceneManager extends Phaser.Scene {
             if (!camp.productionQueue) {
                 camp.productionQueue = [];
                 camp.isProducing = false;
+                // Initialiser le graphique de la barre de prod si inexistant
+                if (!camp.productionBar) {
+                    camp.productionBar = this.add.graphics().setDepth(100005);
+                }
             }
 
             camp.productionQueue.push(unitData);
@@ -138,17 +143,53 @@ export default class MainSceneManager extends Phaser.Scene {
     processCampQueue(camp) {
         if (camp.productionQueue.length === 0) {
             camp.isProducing = false;
+            if (camp.productionBar) camp.productionBar.clear();
             return;
         }
 
         camp.isProducing = true;
         const unitData = camp.productionQueue[0];
-        const buildTime = unitData.buildTime || 0;
+        
+        // On stocke le temps de départ et la durée nécessaire
+        camp.productionStartTime = this.time.now;
+        camp.currentBuildDuration = unitData.buildTime || 1000;
+    }
 
-        this.time.delayedCall(buildTime, () => {
-            this.spawnUnit(camp, unitData);
-            camp.productionQueue.shift(); 
-            this.processCampQueue(camp); 
+    handleCampProduction() {
+        if (!this.MapManager || !this.MapManager.camps) return;
+
+        const currentTime = this.time.now;
+
+        this.MapManager.camps.forEach(camp => {
+            if (camp.isProducing && camp.productionQueue.length > 0) {
+                const elapsedTime = currentTime - camp.productionStartTime;
+                const duration = camp.currentBuildDuration;
+                const progress = Phaser.Math.Clamp(elapsedTime / duration, 0, 1);
+
+                // Dessiner la barre de progression
+                if (camp.productionBar) {
+                    const barWidth = 60;
+                    const barHeight = 8;
+                    const x = camp.x - barWidth / 2;
+                    const y = camp.y - 60; // Au-dessus du camp
+
+                    camp.productionBar.clear();
+                    camp.productionBar.fillStyle(0x000000, 0.7);
+                    camp.productionBar.fillRect(x, y, barWidth, barHeight); // Fond noir
+                    camp.productionBar.fillStyle(0x00ff00, 1);
+                    camp.productionBar.fillRect(x, y, barWidth * progress, barHeight); // Barre verte
+                }
+
+                // Si le temps est écoulé
+                if (elapsedTime >= duration) {
+                    const unitData = camp.productionQueue[0];
+                    this.spawnUnit(camp, unitData);
+                    
+                    // Retirer l'unité faite et passer à la suivante
+                    camp.productionQueue.shift();
+                    this.processCampQueue(camp);
+                }
+            }
         });
     }
 
