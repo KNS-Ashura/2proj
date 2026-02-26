@@ -6,6 +6,7 @@ import Unit from "../Logic/Unit.js";
 import UnitsManager from "./UnitsManager.js";
 import HUDScene from "./HudScene.js";
 import EconomyManager from "./EconomyManager.js";
+import VictoryConditions from "./VictoryConditions.js";
 
 export default class MainSceneManager extends Phaser.Scene {
     constructor() {
@@ -17,60 +18,28 @@ export default class MainSceneManager extends Phaser.Scene {
     preload() {
         this.MapManager = new MapManager(this);
         this.MapManager.registerAssets(this.load);
-        
-        const infantry = new Unit({
+        const character0 = new Unit({
             name: "Character0",
-            role: "Infantry",
             hp: 100,
             walkSpeed: 120,
             hitSpeed: 1,
             buildTime: 0,
             range: 1,
-            price: 50,
+            price: 0,
             frameWidth: 460, 
             frameHeight: 460
         });
-        infantry.role = "Infantry";
-
-        const range = new Unit({
-            name: "Character0", 
-            role: "Range",
-            hp: 80,
-            walkSpeed: 120,
-            hitSpeed: 1,
-            buildTime: 0,
-            range: 3,
-            price: 100,
-            frameWidth: 460, 
-            frameHeight: 460
-        });
-        range.role = "Range";
-
-        const heavy = new Unit({
-            name: "Character0", 
-            role: "Heavy",
-            hp: 150,
-            walkSpeed: 100,
-            hitSpeed: 1,
-            buildTime: 0,
-            range: 1,
-            price: 150,
-            frameWidth: 460, 
-            frameHeight: 460
-        });
-        heavy.role = "Heavy";
-
-        this.unitsList = [infantry, range, heavy];
+        this.unitsList = [character0];
         this.UnitsManager = new UnitsManager(this);
         this.UnitsManager.registerAssets(this.load, this.unitsList);
     }
 
     create() {
-        this.activeUnits = [];
         this.scene.add("HUDScene", HUDScene, true);
         this.economyManager = new EconomyManager(this);
         this.cameraManager = new CameraManager(this);
         this.movesManager = new MovesManager(this);
+        this.victoryConditions = new VictoryConditions(this);
         this.MapManager.generateMap();
         if (this.MapManager.camps) {
             this.movesManager.registerCamps(this.MapManager.camps);
@@ -86,143 +55,24 @@ export default class MainSceneManager extends Phaser.Scene {
         if (this.movesManager) {
             this.movesManager.update();
         }
-        this.updateHealthBars();
-        this.handleCombat();
-    }
-
-    updateHealthBars() {
-        for (let i = this.activeUnits.length - 1; i >= 0; i--) {
-            const sprite = this.activeUnits[i];
-            if (!sprite.active) {
-                if (sprite.healthBar) sprite.healthBar.destroy();
-                this.activeUnits.splice(i, 1);
-                continue;
-            }
-            if (sprite.healthBar) {
-                const bar = sprite.healthBar;
-                const width = 40;
-                const height = 5;
-                
-                let x, y;
-                x = sprite.x - width / 2;
-                y = sprite.y - (sprite.displayHeight || 460) * 0.9 - 10;
-
-                bar.clear();
-                bar.fillStyle(0x000000);
-                bar.fillRect(x, y, width, height);
-                const hpPercent = Phaser.Math.Clamp(sprite.hp / sprite.maxHp, 0, 1);
-                bar.fillStyle(0x00ff00);
-                bar.fillRect(x, y, width * hpPercent, height);
-            }
+        if (this.victoryConditions) {
+            this.victoryConditions.update();
         }
     }
 
     tryBuyUnit(price, unitIndex, camp) {
         if (camp && this.economyManager.spendGold(price)) {
             const unitData = this.unitsList[unitIndex];
-            if (!camp.productionQueue) {
-                camp.productionQueue = [];
-                camp.isProducing = false;
-            }
-
-            camp.productionQueue.push(unitData);
-
-            if (!camp.isProducing) {
-                this.processCampQueue(camp);
-            }
+            const spawnX = camp.x;
+            const spawnY = camp.y + 60; 
+            const sprite = this.UnitsManager.spawnAt(spawnX, spawnY, unitData);
+            sprite.owner = 0; // L'unite appartient au joueur
+            this.physics.add.existing(sprite);
+            this.movesManager.registerUnit(sprite);
+            this.registry.events.emit('closeRecruitment');
+            this.scene.get('HUDScene').events.emit('closeRecruitment');
         } else {
             console.log("Pas assez d'or ou pas de camp sélectionné.");
         }
-    }
-
-    processCampQueue(camp) {
-        if (camp.productionQueue.length === 0) {
-            camp.isProducing = false;
-            return;
-        }
-
-        camp.isProducing = true;
-        const unitData = camp.productionQueue[0];
-        const buildTime = unitData.buildTime || 0;
-
-        this.time.delayedCall(buildTime, () => {
-            this.spawnUnit(camp, unitData);
-            camp.productionQueue.shift(); 
-            this.processCampQueue(camp); 
-        });
-    }
-
-    spawnUnit(camp, unitData) {
-        const spawnX = camp.x;
-        const spawnY = camp.y + 60;
-        const sprite = this.UnitsManager.spawnAt(spawnX, spawnY, unitData);
-        sprite.hp = unitData.hp;
-        sprite.maxHp = unitData.hp;
-        sprite.healthBar = this.add.graphics();
-        sprite.healthBar.setDepth(100001);
-        this.activeUnits.push(sprite);
-        if (unitData.role === "Heavy") {
-            sprite.setTint(0x555555); 
-        } else if (unitData.role === "Range") {
-            sprite.setTint(0x0000ff); 
-        } else {
-            sprite.setTint(0xff0000);
-        }
-
-        this.physics.add.existing(sprite);
-        sprite.body.setSize(180, 340);
-        sprite.body.setOffset(140, 90);
-
-        this.movesManager.registerUnit(sprite);
-        
-        this.registry.events.emit('closeRecruitment');
-        this.scene.get('HUDScene').events.emit('closeRecruitment');
-    }
-
-    handleCombat() {
-        if (!this.MapManager || !this.MapManager.camps) return;
-        
-        const time = this.time.now;
-        
-        this.activeUnits.forEach(unit => {
-            if (!unit.active) return;
-            if (unit.lastAttackTime && time < unit.lastAttackTime + (unit.unit.hitSpeed * 1000)) {
-                return;
-            }
-            const zoneRadius = 1500;
-            let target = null;
-            let minDist = zoneRadius;
-            this.MapManager.camps.forEach(camp => {
-                if (camp.owner !== 0 && camp.active) { 
-                    const dist = Phaser.Math.Distance.Between(unit.x, unit.y, camp.x, camp.y);
-                    if (dist < minDist) {
-                        minDist = dist;
-                        target = camp;
-                    }
-                }
-            });
-
-            if (target) {
-                this.fireProjectile(unit, target);
-                unit.lastAttackTime = time;
-            }
-        });
-    }
-
-    fireProjectile(unit, target) {
-        const bullet = this.add.circle(unit.x, unit.y, 20, 0xffff00);
-        bullet.setDepth(100002);
-        this.tweens.add({
-            targets: bullet,
-            x: target.x,
-            y: target.y,
-            duration: 300,
-            onComplete: () => {
-                bullet.destroy();
-                if (target.takeDamage) {
-                    target.takeDamage(10);
-                }
-            }
-        });
     }
 }

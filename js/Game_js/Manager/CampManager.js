@@ -4,42 +4,10 @@ export class CampManager extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, owner) {
         super(scene, x, y, texture);
         this.owner = owner;
-        this.hp = 1000;
-        this.maxHp = 1000;
-        
-        this.setInteractive(); 
+        this.captureBy = null;      // qui est en train de capturer (null = personne)
+        this.captureProgress = 0;   // progression du timer en ms
+
+        this.setInteractive();
         this.setDepth(y);      
-        
-        this.healthBar = this.scene.add.graphics();
-        this.healthBar.setDepth(y + 100);
-        this.updateHealthBar();
-    }
-
-    takeDamage(amount) {
-        this.hp -= amount;
-        if (this.hp <= 0) {
-            this.hp = 0;
-            this.setActive(false);
-            this.setVisible(false); 
-            this.healthBar.destroy();
-        } else {
-            this.updateHealthBar();
-        }
-    }
-
-    updateHealthBar() {
-        if (!this.active) return;
-        const width = 80;
-        const height = 8;
-        const x = this.x - width / 2;
-        const y = this.y - this.height * 0.8 - 20;
-
-        this.healthBar.clear();
-        this.healthBar.fillStyle(0x000000);
-        this.healthBar.fillRect(x, y, width, height);
-
-        const hpPercent = Phaser.Math.Clamp(this.hp / this.maxHp, 0, 1);
-        this.healthBar.fillStyle(0xff0000); 
-        this.healthBar.fillRect(x, y, width * hpPercent, height);
     }
 }
