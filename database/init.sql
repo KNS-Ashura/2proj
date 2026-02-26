@@ -84,9 +84,10 @@ CREATE TABLE games (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     map_id INT REFERENCES map(id),
     host_id UUID REFERENCES users(id),
-    
+
+    join_code VARCHAR(6) UNIQUE NOT NULL,  -- Code court pour rejoindre (ex: XHK94J)
     status game_status DEFAULT 'WAITING',
-    
+
     started_at TIMESTAMP,
     ended_at TIMESTAMP,
     winner_id UUID REFERENCES users(id)   -- Rempli à la fin
