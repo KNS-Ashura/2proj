@@ -1,16 +1,29 @@
-require('dotenv').config(); 
+require('dotenv').config({ path: '../../.env' });
 const express = require('express');
-const { Pool } = require('pg'); 
+const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
+
+const http = require('http');
+
+
+
+const { Server } = require('socket.io');
+
+
+const lobbyRoutes = require('../Game_js/Online/Routes/lobbyRoutes');
+const lobbySocket = require('../Game_js/Online/Sockets/lobbySocket');
+
 const app = express();
 
 
-app.use(cors()); // pr communiquer avec le front end
-app.use(express.json()); // lire le json du body des requetes
+const server = http.createServer(app);
 
+
+app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(express.json());
 
 const pool = new Pool({
     user: process.env.DB_USER,
@@ -25,6 +38,9 @@ pool.connect((err) => {
     if (err) console.error('Erreur de connexion DB', err.stack);
     else console.log('Connecté à la base de données RTS');
 });
+
+
+app.use('/api/lobby', lobbyRoutes(pool));
 
 app.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
@@ -75,7 +91,17 @@ app.post('/login', async (req, res) => {
 });
 
 
+const init_socket = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173'
+    }
+});
+
+
+lobbySocket(init_socket, pool);
+
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`);
 });
