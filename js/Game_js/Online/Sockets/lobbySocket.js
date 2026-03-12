@@ -3,3 +3,5 @@ module.exports = function (io, pool) {
         console.log('Un joueur connecté :', socket.id);
     });
 };
+
+
