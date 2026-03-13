@@ -7,11 +7,7 @@ export default class MapManager {
         this.obstacles = [];
         this.camps = [];
     
-        this.TILE_WIDTH = 512;
-        this.TILE_HEIGHT = 185;
-
-        this.offsetX = 800;
-        this.offsetY = 200;
+        this.TILE_SIZE = 128;
 
         this.TILE_MAPPING = {
             0: "grass",
@@ -84,23 +80,26 @@ export default class MapManager {
                     return;
                 }
 
-                const isoX = (x - y) * (this.TILE_WIDTH / 2) + this.offsetX;
-                const isoY = (x + y) * (this.TILE_HEIGHT / 2) + this.offsetY;
+                const posX = x * this.TILE_SIZE;
+                const posY = y * this.TILE_SIZE;
 
                 const isCampPos = campKeys.has(`${x},${y}`);
 
-                const tile = this.scene.add.image(isoX, isoY, textureKey);
-                tile.scaleY = 0.6;
-                tile.setDepth(isoY);
+                const tile = this.scene.add.image(posX, posY, textureKey);
+                tile.setOrigin(0, 0);
+
                 this.mapGroup.add(tile);
 
                 if (isCampPos) {
                     const ownerIndex = campOwnerMap[`${x},${y}`];
-                    const camp = new CampManager(this.scene, isoX, isoY, "camp", ownerIndex);
+                    const camp = new CampManager(
+                                            this.scene,
+                                            posX + this.TILE_SIZE / 2,
+                                            posY + this.TILE_SIZE / 2,
+                                            "camp",
+                                            ownerIndex
+                                        );
                     this.scene.add.existing(camp);
-                    
-                    camp.setOrigin(0.5, 0.8);
-                    camp.setDepth(isoY + 1);
                     
                     if (ownerIndex === 0) {
                         camp.setTint(0xff0000); 
@@ -120,9 +119,11 @@ export default class MapManager {
                     
                         const treeKey = clusterValue > 1.1 ? "pine" : "tree";
                         
-                        const tree = this.scene.add.image(isoX, isoY, treeKey);
-                        tree.setOrigin(0.5, 0.9);
-                        tree.setDepth(isoY + 1);
+                        const tree = this.scene.add.image(posX, posY, treeKey);
+                        tree.setOrigin(0.5, 0.8);
+                        tree.x += this.TILE_SIZE / 2;
+                        tree.y += this.TILE_SIZE / 2;
+
                         this.mapGroup.add(tree);
                         this.obstacles.push(tree);
                     }
